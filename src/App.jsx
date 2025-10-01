@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 
 const App = () => {
   return (
@@ -13,6 +14,10 @@ const App = () => {
           <Route
             path="/"
             Component={HomePage}
+          />
+          <Route
+            path="login"
+            Component={LoginPage}
           />
         </Routes>
       </main>

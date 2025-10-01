@@ -1,12 +1,15 @@
 import { useRef, useState } from "react";
 import { NavLink } from "react-router";
 import { FaUser, FaBookmark } from "react-icons/fa";
-import FilterJobs from "./FilterJobs";
+
 import SidePanel from "./SidePanel";
+import { useAuthCtx } from "../context/AuthContext";
 
 const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const sidePanelRef = useRef();
+
+  const { isLogin } = useAuthCtx();
 
   const toggleDrawerHandler = () => {
     setIsDrawerOpen((prev) => !prev);
@@ -16,7 +19,7 @@ const Header = () => {
   return (
     <header className="container mx-auto p-6 text-center">
       <div className="flex items-center justify-between">
-        <a href="index.html">
+        <NavLink to="/">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 200 120"
@@ -49,22 +52,34 @@ const Header = () => {
               JobHunt
             </text>
           </svg>
-        </a>
+        </NavLink>
         <nav className="hidden md:block">
           <ul className="flex items-center text-xl justify-between gap-4">
-            <li className="font-semibold text-sky-600 hover:underline">
-              <a href="index.html">Sign In</a>
-            </li>
-            <li>
-              <NavLink to={"/"}>
-                <FaBookmark />
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to={"/"}>
-                <FaUser />
-              </NavLink>
-            </li>
+            {!isLogin && (
+              <li className="font-semibold text-sky-600 hover:underline">
+                <NavLink to="/login">Sign In</NavLink>
+              </li>
+            )}
+            {isLogin && (
+              <li className="font-semibold text-sky-600 hover:underline">
+                <NavLink to="/logout">Logout</NavLink>
+              </li>
+            )}
+            {isLogin && (
+              <>
+                <li>
+                  <NavLink to={"/"}>
+                    <FaBookmark />
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/"}>
+                    <FaUser />
+                  </NavLink>
+                </li>
+              </>
+            )}
+
             <li className="font-semibold text-gray-500">
               <a href="index.html">Employers Post job</a>
             </li>
@@ -105,12 +120,8 @@ const Header = () => {
             </svg>
           </span>
         </button>
-
         <SidePanel sidePanelRef={sidePanelRef} />
       </div>
-
-      {/* Filter */}
-      <FilterJobs />
     </header>
   );
 };
