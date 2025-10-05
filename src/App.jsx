@@ -3,7 +3,8 @@ import { Route, Routes } from "react-router";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
+import SigninPage from "./pages/SigninPage";
+import SignupPage from "./pages/SignupPage";
 
 const App = () => {
   return (
@@ -16,8 +17,12 @@ const App = () => {
             Component={HomePage}
           />
           <Route
-            path="login"
-            Component={LoginPage}
+            path="/signin"
+            Component={SigninPage}
+          />
+          <Route
+            path="/signup"
+            Component={SignupPage}
           />
         </Routes>
       </main>

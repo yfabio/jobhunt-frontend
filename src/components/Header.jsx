@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   return (
-    <header className="container mx-auto p-4 text-center">
+    <header className="container mx-auto text-center">
       <div className="flex items-center justify-between">
         <NavLink to="/">
           <svg
@@ -64,7 +64,7 @@ const Header = () => {
           <ul className="flex items-center text-xl justify-between gap-4">
             {!isLogin && (
               <li className="font-semibold text-sky-600 hover:underline">
-                <NavLink to="/login">Sign In</NavLink>
+                <NavLink to="/signin">Sign In</NavLink>
               </li>
             )}
             {isLogin && (

@@ -3,11 +3,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuthCtx } from "../context/AuthContext";
 
-const LoginPage = () => {
+const SigninPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "",
   });
 
   const { login } = useAuthCtx();
@@ -63,37 +62,15 @@ const LoginPage = () => {
               className="w-full border rounded py-2 focus:outline-indigo-600"
             />
           </div>
-          <div className="flex gap-4 mt-2">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                value="employee"
-                checked={formData.role === "employee"}
-                onChange={handleChange}
-                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-              />
-              <span className="text-gray-700 font-medium">Employee</span>
-            </label>
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="radio"
-                name="role"
-                value="employer"
-                checked={formData.role === "employer"}
-                onChange={handleChange}
-                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-              />
-              <span className="text-gray-700 font-medium">Employer</span>
-            </label>
-          </div>
           <div className="mt-2">
             <button
               className="py-2 px-6 rounded-lg bg-indigo-600 text-white font-bold border
             hover:bg-indigo-700">
               Login
             </button>
-            <Link className="block text-center text-md text-indigo-600 font-thin hover:underline">
+            <Link
+              to={"/signup"}
+              className="block text-center text-md text-indigo-600 font-thin hover:underline">
               Don't have account yet?
             </Link>
           </div>
@@ -103,4 +80,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SigninPage;

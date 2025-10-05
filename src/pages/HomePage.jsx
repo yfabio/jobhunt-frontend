@@ -16,7 +16,7 @@ const HomePage = () => {
     <>
       {/* Filter */}
       <FilterJobs />
-      <section className="flex flex-col gap-5 mt-2 md:flex-row">
+      <section className="flex flex-col gap-5 mt-4 md:flex-row">
         <div className="flex flex-col items-center flex-1 md:items-start gap-4">
           {jobs.map((job) => (
             <div
@@ -85,7 +85,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:hidden border max-h-[600px] overflow-y-scroll border-gray-300 text-xl rounded p-4 gap-3 flex-2 md:block">
+        <div className="flex flex-col sm:hidden border border-gray-300 text-xl rounded p-4 gap-3 flex-2 md:block">
           <h2 className="text-4xl font-bold capitalize">
             full-stack developer
           </h2>
