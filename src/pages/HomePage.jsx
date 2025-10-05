@@ -16,7 +16,7 @@ const HomePage = () => {
     <>
       {/* Filter */}
       <FilterJobs />
-      <section className="flex flex-col gap-5 mt-6 md:flex-row">
+      <section className="flex flex-col gap-5 mt-2 md:flex-row">
         <div className="flex flex-col items-center flex-1 md:items-start gap-4">
           {jobs.map((job) => (
             <div

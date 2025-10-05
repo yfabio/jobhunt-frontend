@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { FaUser, FaBookmark } from "react-icons/fa";
 
 import SidePanel from "./SidePanel";
@@ -9,15 +9,22 @@ const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const sidePanelRef = useRef();
 
-  const { isLogin } = useAuthCtx();
+  const { isLogin, logout } = useAuthCtx();
+
+  const navigate = useNavigate();
 
   const toggleDrawerHandler = () => {
     setIsDrawerOpen((prev) => !prev);
     sidePanelRef.current.classList.toggle("-translate-x-full", isDrawerOpen);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/", { replace: true });
+  };
+
   return (
-    <header className="container mx-auto p-6 text-center">
+    <header className="container mx-auto p-4 text-center">
       <div className="flex items-center justify-between">
         <NavLink to="/">
           <svg
@@ -61,8 +68,12 @@ const Header = () => {
               </li>
             )}
             {isLogin && (
-              <li className="font-semibold text-sky-600 hover:underline">
-                <NavLink to="/logout">Logout</NavLink>
+              <li className="group font-semibold text-sky-600 hover:underline">
+                <button
+                  onClick={handleLogout}
+                  className="group-hover:underline cursor-pointer">
+                  Logout
+                </button>
               </li>
             )}
             {isLogin && (
@@ -79,10 +90,6 @@ const Header = () => {
                 </li>
               </>
             )}
-
-            <li className="font-semibold text-gray-500">
-              <a href="index.html">Employers Post job</a>
-            </li>
           </ul>
         </nav>
 
