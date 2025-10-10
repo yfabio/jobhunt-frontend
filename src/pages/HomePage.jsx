@@ -2,15 +2,11 @@ import { useState } from "react";
 
 import FilterJobs from "../components/FilterJobs";
 
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-
-import data from "../data/jobs";
+import Pagination from "../components/Pagination";
+import { useJobsCtx } from "../context/JobsContext";
 
 const HomePage = () => {
-  const [jobs, setJobs] = useState(data);
-  const [pages, setPages] = useState(
-    Array.from({ length: 5 }, (_, idx) => (idx += 1))
-  );
+  const { jobs } = useJobsCtx();
 
   return (
     <>
@@ -68,21 +64,8 @@ const HomePage = () => {
               </div>
             </div>
           ))}
-          <div className="mt-2 flex items-center justify-center gap-2 p-4">
-            <button className="py-4 px-4 bg-gray-200 rounded-lg hover:bg-gray-300">
-              <FaAngleLeft className="text-black" />
-            </button>
-            {pages.map((page) => (
-              <button
-                key={page}
-                className="py-3 px-5 text-black font-bold bg-gray-200 rounded-lg hover:bg-gray-300 focus:bg-black focus:text-white">
-                {page}
-              </button>
-            ))}
-            <button className="py-4 px-4 bg-gray-200 rounded-lg hover:bg-gray-300">
-              <FaAngleRight className="text-black" />
-            </button>
-          </div>
+
+          <Pagination />
         </div>
 
         <div className="flex flex-col sm:hidden border border-gray-300 text-xl rounded p-4 gap-3 flex-2 md:block">
