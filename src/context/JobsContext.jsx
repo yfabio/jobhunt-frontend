@@ -6,8 +6,6 @@ import data from "../data/jobs";
 
 const JOBS_PER_PAGE = 5;
 
-const MAX_PAGE = 5;
-
 const getJobs = (limit, offset) => {
   const jobs = [];
   const index = offset === 0 ? 0 : offset - 1;
@@ -18,56 +16,23 @@ const getJobs = (limit, offset) => {
 };
 
 export function JobsProvider({ children }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageGroup, setPageGroup] = useState(0);
-
-  const jobs = getJobs(JOBS_PER_PAGE, (currentPage - 1) * JOBS_PER_PAGE);
-
-  const totalPages = Math.ceil(data.length / JOBS_PER_PAGE);
-
-  const startPage = pageGroup * MAX_PAGE + 1;
-
-  const endPage = Math.min(startPage + MAX_PAGE - 1, totalPages);
-
-  const pageNumbers = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
-
-  const nextPageHandler = (page) => {
-    setCurrentPage(page);
-  };
-
-  const nextPage = () => {
-    if (endPage < totalPages) {
-      setPageGroup(pageGroup + 1);
-      setCurrentPage(startPage + MAX_PAGE);
-    }
-  };
-
-  const previousPage = () => {
-    if (pageGroup > 0) {
-      setPageGroup(pageGroup - 1);
-      setCurrentPage(startPage - MAX_PAGE);
-    }
-  };
+  const [jobs, setJobs] = useState(getJobs(JOBS_PER_PAGE, 0));
 
   const getJobById = (id) => {
     return data.find((job) => job.id == id);
+  };
+
+  const nextCurrentPage = (perPage, nextBach) => {
+    setJobs(getJobs(perPage, nextBach));
   };
 
   return (
     <JobsContext.Provider
       value={{
         jobs,
-        totalPages,
-        endPage,
-        pageGroup,
-        pageNumbers,
-        nextPage,
-        previousPage,
-        nextPageHandler,
+        totalJobs: data.length,
         getJobById,
+        nextCurrentPage,
       }}>
       {children}
     </JobsContext.Provider>

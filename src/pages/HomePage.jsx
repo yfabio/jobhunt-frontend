@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route, useNavigate, useLocation } from "react-router";
 
 import FilterJobs from "../components/FilterJobs";
 import Pagination from "../components/Pagination";
@@ -6,9 +6,19 @@ import JobItem from "../components/JobItem";
 
 import { useJobsCtx } from "../context/JobsContext";
 import JobInfo from "../components/JobInfo";
+import { useEffect } from "react";
 
 const HomePage = () => {
   const { jobs } = useJobsCtx();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (jobs.length > 0 && location.pathname === "/") {
+      navigate(`/${jobs[0].id}`, { replace: true });
+    }
+  }, [jobs, location.pathname, navigate]);
 
   return (
     <>

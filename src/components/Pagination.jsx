@@ -3,16 +3,46 @@ import { useState } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useJobsCtx } from "../context/JobsContext";
 
+const JOBS_PER_PAGE = 5;
+
+const MAX_PAGE = 5;
+
 const Pagination = () => {
-  const {
-    pageGroup,
-    endPage,
-    nextPage,
-    previousPage,
-    nextPageHandler,
-    totalPages,
-    pageNumbers,
-  } = useJobsCtx();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageGroup, setPageGroup] = useState(0);
+
+  const { nextCurrentPage, totalJobs } = useJobsCtx();
+
+  const totalPages = Math.ceil(totalJobs / JOBS_PER_PAGE);
+
+  const startPage = pageGroup * MAX_PAGE + 1;
+
+  const endPage = Math.min(startPage + MAX_PAGE - 1, totalPages);
+
+  const pageNumbers = [];
+
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+  const nextPageHandler = (page) => {
+    setCurrentPage((_) => page);
+    nextCurrentPage(JOBS_PER_PAGE, (currentPage - 1) * JOBS_PER_PAGE);
+  };
+
+  const nextPage = () => {
+    if (endPage < totalPages) {
+      setPageGroup(pageGroup + 1);
+      setCurrentPage(startPage + MAX_PAGE);
+    }
+  };
+
+  const previousPage = () => {
+    if (pageGroup > 0) {
+      setPageGroup(pageGroup - 1);
+      setCurrentPage(startPage - MAX_PAGE);
+    }
+  };
 
   return (
     <div className="mt-2 flex items-center justify-center gap-2 p-4">
