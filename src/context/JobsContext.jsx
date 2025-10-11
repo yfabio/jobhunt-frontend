@@ -44,11 +44,16 @@ export function JobsProvider({ children }) {
       setCurrentPage(startPage + MAX_PAGE);
     }
   };
+
   const previousPage = () => {
     if (pageGroup > 0) {
       setPageGroup(pageGroup - 1);
       setCurrentPage(startPage - MAX_PAGE);
     }
+  };
+
+  const getJobById = (id) => {
+    return data.find((job) => job.id == id);
   };
 
   return (
@@ -62,6 +67,7 @@ export function JobsProvider({ children }) {
         nextPage,
         previousPage,
         nextPageHandler,
+        getJobById,
       }}>
       {children}
     </JobsContext.Provider>

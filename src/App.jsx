@@ -13,7 +13,7 @@ const App = () => {
       <main className="container mx-auto p-6">
         <Routes>
           <Route
-            path="/"
+            path="/*"
             Component={HomePage}
           />
           <Route
