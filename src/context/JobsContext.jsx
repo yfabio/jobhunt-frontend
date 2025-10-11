@@ -21,9 +21,7 @@ export function JobsProvider({ children }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageGroup, setPageGroup] = useState(0);
 
-  console.log(data.length);
-
-  const items = getJobs(JOBS_PER_PAGE, (currentPage - 1) * JOBS_PER_PAGE);
+  const jobs = getJobs(JOBS_PER_PAGE, (currentPage - 1) * JOBS_PER_PAGE);
 
   const totalPages = Math.ceil(data.length / JOBS_PER_PAGE);
 
@@ -56,7 +54,7 @@ export function JobsProvider({ children }) {
   return (
     <JobsContext.Provider
       value={{
-        jobs: items,
+        jobs,
         totalPages,
         endPage,
         pageGroup,
