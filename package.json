@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "json-srv": "json-server data/jobs.json --port 9000"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",

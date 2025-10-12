@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router";
 
 import FilterJobs from "../components/FilterJobs";
-import Pagination from "../components/Pagination";
+
 import JobItem from "../components/JobItem";
 
 import { useJobsCtx } from "../context/JobsContext";
@@ -32,7 +32,6 @@ const HomePage = () => {
               job={job}
             />
           ))}
-          <Pagination />
         </div>
 
         <Routes>
