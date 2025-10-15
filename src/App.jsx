@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router";
 
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import Pagination from "./components/Pagination";
 import HomePage from "./pages/HomePage";
 import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
@@ -27,7 +26,6 @@ const App = () => {
           />
         </Routes>
       </main>
-      <Pagination />
       <Footer />
     </>
   );

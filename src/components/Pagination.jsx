@@ -25,9 +25,13 @@ const Pagination = () => {
     pageNumbers.push(i);
   }
 
+  if (pageNumbers[0] === currentPage) {
+    console.log(currentPage);
+  }
+
   const nextPageHandler = (page) => {
     setCurrentPage((_) => page);
-    nextCurrentPage(JOBS_PER_PAGE, (currentPage - 1) * JOBS_PER_PAGE);
+    nextCurrentPage(page, JOBS_PER_PAGE);
   };
 
   const nextPage = () => {
@@ -56,7 +60,11 @@ const Pagination = () => {
         <button
           key={page}
           onClick={() => nextPageHandler(page)}
-          className="py-3 px-5 text-black font-bold bg-gray-200 rounded-lg hover:bg-gray-300 focus:bg-black focus:text-white">
+          className={`${
+            currentPage === page
+              ? "bg-black text-white"
+              : "text-black bg-gray-200"
+          } py-3 px-5 font-bold rounded-lg hover:bg-gray-300 focus:bg-black focus:text-white`}>
           {page}
         </button>
       ))}
