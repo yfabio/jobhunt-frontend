@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
+import UserPage from "./pages/UserPage";
 
 const App = () => {
   return (
@@ -23,6 +24,10 @@ const App = () => {
           <Route
             path="/signup"
             Component={SignupPage}
+          />
+          <Route
+            path="/user"
+            Component={UserPage}
           />
         </Routes>
       </main>
