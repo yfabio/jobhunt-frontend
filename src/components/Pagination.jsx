@@ -25,10 +25,6 @@ const Pagination = () => {
     pageNumbers.push(i);
   }
 
-  if (pageNumbers[0] === currentPage) {
-    console.log(currentPage);
-  }
-
   const nextPageHandler = (page) => {
     setCurrentPage((_) => page);
     nextCurrentPage(page, JOBS_PER_PAGE);
