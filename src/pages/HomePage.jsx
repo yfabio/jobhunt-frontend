@@ -2,11 +2,11 @@ import { Routes, Route, useNavigate, useLocation } from "react-router";
 
 import FilterJobs from "../components/FilterJobs";
 
-import JobItem from "../components/JobItem";
+import JobItem from "../employee/JobItem";
 import Pagination from "../components/Pagination";
 
 import { useJobsCtx } from "../context/JobsContext";
-import JobInfo from "../components/JobInfo";
+import JobInfo from "../employee/JobInfo";
 import { useEffect } from "react";
 
 const HomePage = () => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Profile from "../components/Profile";
-import Jobs from "../components/Jobs";
-import Interviews from "../components/Interviews";
+import Profile from "../employee/Profile";
+import Jobs from "../employee/Jobs";
+import Interviews from "../employee/Interviews";
 
 const UserPage = () => {
   const [menu, setMenu] = useState([
