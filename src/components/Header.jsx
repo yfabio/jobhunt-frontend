@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { FaUser, FaBookmark } from "react-icons/fa";
 
 import SidePanel from "./SidePanel";
@@ -11,8 +11,6 @@ const Header = () => {
 
   const { isLogin, logout } = useAuthCtx();
 
-  const navigate = useNavigate();
-
   const toggleDrawerHandler = () => {
     setIsDrawerOpen((prev) => !prev);
     sidePanelRef.current.classList.toggle("-translate-x-full", isDrawerOpen);
@@ -20,7 +18,6 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/", { replace: true });
   };
 
   return (

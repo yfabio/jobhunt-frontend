@@ -1,9 +1,12 @@
 import { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isLogin, setIsLogin] = useState(false);
+
+  const navigate = useNavigate();
 
   const login = () => {
     setIsLogin(true);
@@ -11,6 +14,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setIsLogin(false);
+    navigate("/", { replace: true });
   };
 
   return (
