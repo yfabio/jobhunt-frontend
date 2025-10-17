@@ -11,7 +11,7 @@ const App = () => {
   return (
     <>
       <Header />
-      <main className="container mx-auto p-6">
+      <main className="">
         <Routes>
           <Route
             path="/*"

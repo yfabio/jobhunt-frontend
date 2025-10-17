@@ -23,25 +23,27 @@ const HomePage = () => {
 
   return (
     <>
-      {/* Filter */}
-      <FilterJobs />
-      <section className="flex flex-col gap-5 mt-4 md:flex-row">
-        <div className="flex flex-col items-center flex-1 md:items-start gap-4">
-          {jobs.map((job) => (
-            <JobItem
-              key={job.id}
-              job={job}
-            />
-          ))}
-          <Pagination />
-        </div>
+      <section className="container mx-auto p-6">
+        {/* Filter */}
+        <FilterJobs />
+        <div className="flex flex-col gap-5 mt-4 md:flex-row">
+          <div className="flex flex-col items-center flex-1 md:items-start gap-4">
+            {jobs.map((job) => (
+              <JobItem
+                key={job.id}
+                job={job}
+              />
+            ))}
+            <Pagination />
+          </div>
 
-        <Routes>
-          <Route
-            path="/:id"
-            Component={JobInfo}
-          />
-        </Routes>
+          <Routes>
+            <Route
+              path="/:id"
+              Component={JobInfo}
+            />
+          </Routes>
+        </div>
       </section>
     </>
   );
