@@ -2,10 +2,10 @@ import {
   FaAndroid,
   FaApple,
   FaFacebook,
-  FaX,
   FaYoutube,
+  FaXTwitter,
   FaInstagram,
-} from "react-icons/fa";
+} from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -82,13 +82,30 @@ const Footer = () => {
         </div>
       </div>
       <div className="border-[2px] border-gray-200 mt-20"></div>
-      <div className="flex flex-col items-center justify-center gap-2 py-6 md:flex-row">
+      <div className="flex flex-col items-center justify-center gap-6 py-6 md:flex-row">
         <div className="flex items-center justify-center gap-3">
-          <h2 className="text-slate-500">Download the App</h2>
-          <FaAndroid size={22} />
-          <FaApple size={22} />
+          <h2 className="text-xl text-slate-500">Download the App</h2>
+          <FaAndroid size={32} />
+          <FaApple size={32} />
         </div>
-        <div className="flex items-center justify-center gap-3"></div>
+        <div className="flex items-center justify-center gap-3">
+          <FaFacebook
+            size={32}
+            className="hover:text-blue-600"
+          />
+          <FaXTwitter
+            size={32}
+            className="hover:text-indigo-600"
+          />
+          <FaYoutube
+            size={32}
+            className="hover:text-red-600"
+          />
+          <FaInstagram
+            size={32}
+            className="hover:text-pink-700"
+          />
+        </div>
       </div>
     </footer>
   );

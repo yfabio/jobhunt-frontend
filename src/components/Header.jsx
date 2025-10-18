@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { NavLink } from "react-router";
-import { FaUser, FaBookmark } from "react-icons/fa";
+import { FaUser, FaBookmark } from "react-icons/fa6";
 
 import SidePanel from "./SidePanel";
 import { useAuthCtx } from "../context/AuthContext";
