@@ -5,6 +5,7 @@ import { FaPen, FaSignOutAlt } from "react-icons/fa";
 import Profile from "../employee/Profile";
 import Jobs from "../employee/Jobs";
 import Interviews from "../employee/Interviews";
+import AccountSettings from "../employee/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
 
 const UserPage = () => {
@@ -19,6 +20,10 @@ const UserPage = () => {
     },
     {
       label: "Interviews",
+      selected: false,
+    },
+    {
+      label: "Account Settings",
       selected: false,
     },
   ]);
@@ -48,6 +53,8 @@ const UserPage = () => {
         return <Jobs />;
       case "Interviews":
         return <Interviews />;
+      case "Account Settings":
+        return <AccountSettings />;
       default:
         return <div>Please select a menu item</div>;
     }

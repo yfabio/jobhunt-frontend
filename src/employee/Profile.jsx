@@ -1,27 +1,108 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 
+import { VALIDATOR_REQUIRE, validate } from "../util/validators";
 import { FaPen } from "react-icons/fa";
+
+const formReducer = (state, action) => {
+  let input;
+  switch (action.type) {
+    case "CHANGE":
+      let isFormValid = true;
+      input = state[action.name];
+      input.value = action.value;
+      input.isValid = validate(action.value, input.validators);
+      if (input.isValid) {
+        input.touch = false;
+      }
+      for (const key in state) {
+        if (key !== "isFormValid") {
+          if (key === action.name) {
+            isFormValid = isFormValid && input.isValid;
+          } else {
+            isFormValid = isFormValid && state[key].isValid;
+          }
+        }
+      }
+      return {
+        ...state,
+        [action.name]: input,
+        isFormValid,
+      };
+    case "TOUCH":
+      input = state[action.name];
+      input.touch = action.touch;
+      return {
+        ...state,
+        [action.name]: input,
+      };
+    default:
+      return state;
+  }
+};
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
-  const [formData, setFormData] = useState({
-    empStatus: "",
-    firstName: "",
-    lastName: "",
-    jobTitle: "",
-    location: "",
-    primaryIndustry: "",
+
+  const [state, dispatch] = useReducer(formReducer, {
+    empStatus: {
+      value: "employed",
+      isValid: true,
+      validators: [VALIDATOR_REQUIRE],
+    },
+    firstName: {
+      value: "",
+      isValid: false,
+      touched: false,
+      validators: [VALIDATOR_REQUIRE()],
+    },
+    lastName: {
+      value: "",
+      isValid: false,
+      touched: false,
+      validators: [VALIDATOR_REQUIRE()],
+    },
+    jobTitle: {
+      value: "",
+      isValid: false,
+      touched: false,
+      validators: [VALIDATOR_REQUIRE()],
+    },
+    location: {
+      value: "",
+      isValid: false,
+      touched: false,
+      validators: [VALIDATOR_REQUIRE()],
+    },
+    primaryIndustry: {
+      value: "",
+      isValid: false,
+      validators: [VALIDATOR_REQUIRE],
+    },
+    isFormValid: false,
   });
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    const values = [];
+
+    for (const key in state) {
+      if (state[key].value) {
+        values.push(state[key].value);
+      }
+    }
+
+    console.log(values);
+
     setEdit(false);
   };
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    dispatch({ type: "CHANGE", name: e.target.name, value: e.target.value });
+  };
+
+  const handleTouch = (e) => {
+    dispatch({ type: "TOUCH", name: e.target.name, touch: true });
   };
 
   return (
@@ -53,7 +134,7 @@ const Profile = () => {
             <select
               id="empStatus"
               name="empStatus"
-              value={formData.empStatus}
+              value={state.empStatus.value}
               onChange={handleChange}
               className="block w-full py-2">
               <option value="employed">Employed</option>
@@ -73,8 +154,9 @@ const Profile = () => {
               type="text"
               name="firstName"
               id="firstName"
-              value={formData.firstName}
+              value={state.firstName.value}
               onChange={handleChange}
+              onBlur={handleTouch}
               placeholder="First Name"
               className="block w-full py-2"
             />
@@ -92,7 +174,7 @@ const Profile = () => {
               type="text"
               name="lastName"
               id="lastName"
-              value={formData.lastName}
+              value={state.lastName.value}
               onChange={handleChange}
               placeholder="Last Name"
               className="block w-full py-2"
@@ -111,7 +193,7 @@ const Profile = () => {
               type="text"
               name="jobTitle"
               id="jobTitle"
-              value={formData.jobTitle}
+              value={state.jobTitle.value}
               onChange={handleChange}
               placeholder="Job Title"
               className="block w-full py-2"
@@ -130,7 +212,7 @@ const Profile = () => {
               type="text"
               name="location"
               id="location"
-              value={formData.location}
+              value={state.location.value}
               onChange={handleChange}
               placeholder="Job Title"
               className="block w-full py-2"
@@ -148,7 +230,7 @@ const Profile = () => {
             <select
               id="primaryIndustry"
               name="primaryIndustry"
-              value={formData.primaryIndustry}
+              value={state.primaryIndustry.value}
               onChange={handleChange}
               className="block w-full py-2">
               <option value="tech">Tech</option>
@@ -169,7 +251,9 @@ const Profile = () => {
               className="text-slate-700 border rounded w-full py-2 hover:text-white hover:bg-indigo-600">
               Cancel
             </button>
-            <button className="bg-black text-white rounded w-full py-2 hover:bg-indigo-600">
+            <button
+              disabled={!state.isFormValid}
+              className="bg-black text-white rounded w-full py-2 disabled:opacity-35 hover:bg-indigo-600">
               Save
             </button>
           </div>
