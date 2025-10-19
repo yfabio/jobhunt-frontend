@@ -1,16 +1,16 @@
-import { VALIDATOR_REQUIRE } from "../../util/validators";
+import { VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from "../util/validators";
 
 export default {
   email: {
-    value: "",
+    value: "yfabio@pop.com",
     isValid: false,
     touched: false,
     validators: [VALIDATOR_REQUIRE()],
   },
   password: {
-    value: "",
+    value: "123456",
     isValid: false,
     touched: false,
-    validators: [VALIDATOR_REQUIRE()],
+    validators: [VALIDATOR_MINLENGTH(6)],
   },
 };

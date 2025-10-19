@@ -1,4 +1,4 @@
-import { VALIDATOR_REQUIRE } from "../../util/validators";
+import { VALIDATOR_REQUIRE } from "../util/validators";
 
 export default {
   email: {
