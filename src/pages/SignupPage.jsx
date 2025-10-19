@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 
-import SignupInput from "./inputs/SignupInput";
+import SignupInput from "../model/SignupInput";
 
 import { useAuthCtx } from "../context/AuthContext";
 

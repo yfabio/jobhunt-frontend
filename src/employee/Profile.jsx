@@ -2,7 +2,7 @@ import { useState, useReducer } from "react";
 
 import useValidate from "../hooks/useValidate";
 
-import ProfileInputs from "./inputs/ProfileInput.js";
+import ProfileInputs from "../model/ProfileInput";
 
 import { FaPen } from "react-icons/fa";
 
