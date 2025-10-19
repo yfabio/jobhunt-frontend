@@ -1,99 +1,21 @@
 import { useState, useReducer } from "react";
 
-import { VALIDATOR_REQUIRE, validate } from "../util/validators";
-import { FaPen } from "react-icons/fa";
+import useValidate from "../hooks/useValidate";
 
-const formReducer = (state, action) => {
-  let input;
-  switch (action.type) {
-    case "CHANGE":
-      let isFormValid = true;
-      input = state[action.name];
-      input.value = action.value;
-      input.isValid = validate(action.value, input.validators);
-      if (input.isValid) {
-        input.touch = false;
-      }
-      for (const key in state) {
-        if (key !== "isFormValid") {
-          if (key === action.name) {
-            isFormValid = isFormValid && input.isValid;
-          } else {
-            isFormValid = isFormValid && state[key].isValid;
-          }
-        }
-      }
-      return {
-        ...state,
-        [action.name]: input,
-        isFormValid,
-      };
-    case "TOUCH":
-      input = state[action.name];
-      input.touch = action.touch;
-      return {
-        ...state,
-        [action.name]: input,
-      };
-    default:
-      return state;
-  }
-};
+import ProfileInputs from "./inputs/ProfileInput.js";
+
+import { FaPen } from "react-icons/fa";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
-
-  const [state, dispatch] = useReducer(formReducer, {
-    empStatus: {
-      value: "employed",
-      isValid: true,
-      validators: [VALIDATOR_REQUIRE],
-    },
-    firstName: {
-      value: "",
-      isValid: false,
-      touched: false,
-      validators: [VALIDATOR_REQUIRE()],
-    },
-    lastName: {
-      value: "",
-      isValid: false,
-      touched: false,
-      validators: [VALIDATOR_REQUIRE()],
-    },
-    jobTitle: {
-      value: "",
-      isValid: false,
-      touched: false,
-      validators: [VALIDATOR_REQUIRE()],
-    },
-    location: {
-      value: "",
-      isValid: false,
-      touched: false,
-      validators: [VALIDATOR_REQUIRE()],
-    },
-    primaryIndustry: {
-      value: "",
-      isValid: false,
-      validators: [VALIDATOR_REQUIRE],
-    },
-    isFormValid: false,
-  });
+  const [state, dispatch, formData] = useValidate(ProfileInputs);
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    const values = [];
-
-    for (const key in state) {
-      if (state[key].value) {
-        values.push(state[key].value);
-      }
+    if (state.isFormValid) {
+      console.log(formData);
     }
-
-    console.log(values);
-
     setEdit(false);
   };
 
@@ -102,7 +24,11 @@ const Profile = () => {
   };
 
   const handleTouch = (e) => {
-    dispatch({ type: "TOUCH", name: e.target.name, touch: true });
+    dispatch({ type: "TOUCH", name: e.target.name, touched: true });
+  };
+
+  const handleCancel = () => {
+    setEdit(false);
   };
 
   return (
@@ -136,6 +62,7 @@ const Profile = () => {
               name="empStatus"
               value={state.empStatus.value}
               onChange={handleChange}
+              onBlur={handleTouch}
               className="block w-full py-2">
               <option value="employed">Employed</option>
               <option value="not_employed">Not Employed</option>
@@ -158,10 +85,18 @@ const Profile = () => {
               onChange={handleChange}
               onBlur={handleTouch}
               placeholder="First Name"
-              className="block w-full py-2"
+              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200
+              ${
+                state.firstName.touched && !state.firstName.isValid
+                  ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                  : ""
+              }`}
             />
           )}
           {!edit && <p className="text-lg">Fabio</p>}
+          {edit && state.firstName.touched && !state.firstName.isValid && (
+            <span className="text-red-500 text-sm">First name is required</span>
+          )}
         </div>
         <div>
           <label
@@ -176,11 +111,20 @@ const Profile = () => {
               id="lastName"
               value={state.lastName.value}
               onChange={handleChange}
+              onBlur={handleTouch}
               placeholder="Last Name"
-              className="block w-full py-2"
+              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200 
+                ${
+                  state.lastName.touched && !state.lastName.isValid
+                    ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                    : ""
+                }`}
             />
           )}
           {!edit && <p className="text-lg">Yamshita</p>}
+          {edit && state.lastName.touched && !state.lastName.isValid && (
+            <span className="text-red-500 text-sm">Last name is required</span>
+          )}
         </div>
         <div>
           <label
@@ -195,11 +139,20 @@ const Profile = () => {
               id="jobTitle"
               value={state.jobTitle.value}
               onChange={handleChange}
+              onBlur={handleTouch}
               placeholder="Job Title"
-              className="block w-full py-2"
+              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200 
+                ${
+                  state.jobTitle.touched && !state.jobTitle.isValid
+                    ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                    : ""
+                }`}
             />
           )}
           {!edit && <p className="text-lg">Software Developer</p>}
+          {edit && state.jobTitle.touched && !state.jobTitle.isValid && (
+            <span className="text-red-500 text-sm">Job title is required</span>
+          )}
         </div>
         <div>
           <label
@@ -214,11 +167,20 @@ const Profile = () => {
               id="location"
               value={state.location.value}
               onChange={handleChange}
-              placeholder="Job Title"
-              className="block w-full py-2"
+              onBlur={handleTouch}
+              placeholder="Location"
+              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200 
+                  ${
+                    state.location.touched && !state.location.isValid
+                      ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                      : ""
+                  }`}
             />
           )}
           {!edit && <p className="text-lg">Sao Paulo, SP Brazil</p>}
+          {edit && state.location.touched && !state.location.isValid && (
+            <span className="text-red-500 text-sm">Location is required</span>
+          )}
         </div>
         <div>
           <label
@@ -246,14 +208,14 @@ const Profile = () => {
         {edit && (
           <div className="flex items-center justify-between gap-4">
             <button
-              onClick={() => setEdit(false)}
+              onClick={handleCancel}
               type="button"
               className="text-slate-700 border rounded w-full py-2 hover:text-white hover:bg-indigo-600">
               Cancel
             </button>
             <button
               disabled={!state.isFormValid}
-              className="bg-black text-white rounded w-full py-2 disabled:opacity-35 hover:bg-indigo-600">
+              className="bg-black text-white rounded w-full py-2 disabled:opacity-35 disabled:cursor-not-allowed disabled:bg-gray-400 hover:bg-indigo-600 ">
               Save
             </button>
           </div>
