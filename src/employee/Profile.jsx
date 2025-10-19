@@ -1,14 +1,17 @@
-import { useState, useReducer } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import useValidate from "../hooks/useValidate";
 
 import ProfileInputs from "../model/ProfileInput";
 
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaUpload } from "react-icons/fa";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
+  const [file, setFile] = useState();
   const [state, dispatch, formData] = useValidate(ProfileInputs);
+
+  const filePickerRef = useRef();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -31,11 +34,29 @@ const Profile = () => {
     setEdit(false);
   };
 
+  const handleFilePicker = () => {
+    filePickerRef.current.click();
+  };
+
+  const handleFile = (e) => {
+    if (e.target.files && e.target.files.length === 1) {
+      const pickedFile = e.target.files[0];
+      setFile(pickedFile);
+    }
+  };
+
+  useEffect(() => {
+    //TODO needs to open a model with a preview
+    console.log("file was picked");
+  }, [file]);
+
   return (
     <div className="rounded p-6 border-[1px] border-gray-200">
       <h1 className="text-2xl font-bold my-20">Profile</h1>
       <div className="flex items-center gap-4">
-        <h2 className="font-semibold text-2xl text-gray-600">My information</h2>
+        <h2 className="font-semibold text-2xl text-slate-600">
+          My information
+        </h2>
         {!edit && (
           <button
             onClick={() => setEdit(true)}
@@ -221,6 +242,27 @@ const Profile = () => {
           </div>
         )}
       </form>
+      <div className="flex flex-col gap-4 mt-6">
+        <h2 className="font-semibold text-2xl text-slate-600">CV</h2>
+        <div
+          onClick={handleFilePicker}
+          className="flex py-4 px-4 gap-2 cursor-pointer rounded border border-dotted">
+          <FaUpload size={22} />
+          <div>
+            <h3 className="text-xl">Upload CV</h3>
+            <p className="text-sm">Use a pdf, docx, doc, rtf or txt</p>
+          </div>
+          <input
+            id="cv"
+            type="file"
+            name="cv"
+            className="hidden"
+            accept=".pdf,.docx,.doc,.rtf,.txt"
+            ref={filePickerRef}
+            onChange={handleFile}
+          />
+        </div>
+      </div>
     </div>
   );
 };
