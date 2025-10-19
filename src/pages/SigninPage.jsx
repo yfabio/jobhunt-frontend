@@ -1,23 +1,22 @@
-import { useState } from "react";
-
 import { Link, useNavigate } from "react-router";
+
+import SiginInput from "./inputs/SiginInput";
 import { useAuthCtx } from "../context/AuthContext";
+import useValidate from "../hooks/useValidate";
 
 const SigninPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [state, dispatch, formData] = useValidate(SiginInput);
 
   const { login } = useAuthCtx();
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    dispatch({ type: "CHANGE", name: e.target.name, value: e.target.value });
+  };
+
+  const handleTouch = (e) => {
+    dispatch({ type: "TOUCH", name: e.target.name, touched: true });
   };
 
   const handleSubmit = (e) => {
@@ -42,10 +41,20 @@ const SigninPage = () => {
               type="email"
               name="email"
               id="email"
-              value={formData.email}
+              placeholder="Email"
+              value={state.email.value}
               onChange={handleChange}
-              className="w-full border rounded py-2 focus:outline-indigo-600"
+              onBlur={handleTouch}
+              className={`w-full border rounded py-2 outline-none transition-colors duration-200 focus:outline-indigo-600 
+                ${
+                  state.email.touched && !state.email.isValid
+                    ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                    : ""
+                }`}
             />
+            {state.email.touched && !state.email.isValid && (
+              <span className="text-red-500 text-sm">Email is required</span>
+            )}
           </div>
           <div className="flex flex-col text-lg">
             <label
@@ -57,14 +66,25 @@ const SigninPage = () => {
               type="password"
               name="password"
               id="password"
-              value={formData.password}
+              placeholder="Password"
+              value={state.password.value}
               onChange={handleChange}
-              className="w-full border rounded py-2 focus:outline-indigo-600"
+              onBlur={handleTouch}
+              className={`w-full border rounded py-2 outline-none transition-colors duration-200 focus:outline-indigo-600 
+                ${
+                  state.password.touched && !state.password.isValid
+                    ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                    : ""
+                }`}
             />
+            {state.password.touched && !state.password.isValid && (
+              <span className="text-red-500 text-sm">Password is required</span>
+            )}
           </div>
           <div className="mt-2">
             <button
-              className="py-2 px-6 rounded-lg bg-indigo-600 text-white font-bold border
+              disabled={!state.isFormValid}
+              className="py-2 px-6 rounded-lg bg-indigo-600 text-white font-bold border disabled:opacity-35 disabled:cursor-not-allowed disabled:bg-gray-400
             hover:bg-indigo-700">
               Login
             </button>
