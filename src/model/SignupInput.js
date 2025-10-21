@@ -1,4 +1,4 @@
-import { VALIDATOR_REQUIRE } from "../util/validators";
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../util/validators";
 
 export default {
   email: {
@@ -11,7 +11,7 @@ export default {
     value: "",
     isValid: false,
     touched: false,
-    validators: [VALIDATOR_REQUIRE()],
+    validators: [VALIDATOR_MINLENGTH(6)],
   },
   role: {
     value: "employee",
@@ -19,4 +19,5 @@ export default {
     touched: false,
     validators: [VALIDATOR_REQUIRE()],
   },
+  isFormValid: false,
 };

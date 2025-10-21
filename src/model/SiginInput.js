@@ -13,4 +13,5 @@ export default {
     touched: false,
     validators: [VALIDATOR_MINLENGTH(6)],
   },
+  isFormValid: false,
 };

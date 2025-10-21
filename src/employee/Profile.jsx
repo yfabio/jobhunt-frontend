@@ -5,6 +5,7 @@ import useValidate from "../hooks/useValidate";
 import ProfileInputs from "../model/ProfileInput";
 
 import { FaPen, FaUpload } from "react-icons/fa";
+import ButtonsAction from "../components/ButtonsAction";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
@@ -47,11 +48,10 @@ const Profile = () => {
 
   useEffect(() => {
     //TODO needs to open a model with a preview
-    console.log("file was picked");
   }, [file]);
 
   return (
-    <div className="rounded p-6 border-[1px] border-gray-200">
+    <section className="rounded p-6 border-[1px] border-gray-200">
       <h1 className="text-2xl font-bold my-20">Profile</h1>
       <div className="flex items-center gap-4">
         <h2 className="font-semibold text-2xl text-slate-600">
@@ -106,7 +106,7 @@ const Profile = () => {
               onChange={handleChange}
               onBlur={handleTouch}
               placeholder="First Name"
-              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200
+              className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200
               ${
                 state.firstName.touched && !state.firstName.isValid
                   ? "border-red-500 bg-red-100 placeholder:text-red-600"
@@ -134,7 +134,7 @@ const Profile = () => {
               onChange={handleChange}
               onBlur={handleTouch}
               placeholder="Last Name"
-              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200 
+              className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200 
                 ${
                   state.lastName.touched && !state.lastName.isValid
                     ? "border-red-500 bg-red-100 placeholder:text-red-600"
@@ -162,7 +162,7 @@ const Profile = () => {
               onChange={handleChange}
               onBlur={handleTouch}
               placeholder="Job Title"
-              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200 
+              className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200 
                 ${
                   state.jobTitle.touched && !state.jobTitle.isValid
                     ? "border-red-500 bg-red-100 placeholder:text-red-600"
@@ -190,7 +190,7 @@ const Profile = () => {
               onChange={handleChange}
               onBlur={handleTouch}
               placeholder="Location"
-              className={`block w-full py-2 border outline-none  rounded transition-colors duration-200 
+              className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200 
                   ${
                     state.location.touched && !state.location.isValid
                       ? "border-red-500 bg-red-100 placeholder:text-red-600"
@@ -226,20 +226,12 @@ const Profile = () => {
           )}
           {!edit && <p className="text-lg">Consulting</p>}
         </div>
+
         {edit && (
-          <div className="flex items-center justify-between gap-4">
-            <button
-              onClick={handleCancel}
-              type="button"
-              className="text-slate-700 border rounded w-full py-2 hover:text-white hover:bg-indigo-600">
-              Cancel
-            </button>
-            <button
-              disabled={!state.isFormValid}
-              className="bg-black text-white rounded w-full py-2 disabled:opacity-35 disabled:cursor-not-allowed disabled:bg-gray-400 hover:bg-indigo-600 ">
-              Save
-            </button>
-          </div>
+          <ButtonsAction
+            disabled={!state.isFormValid}
+            onCancel={handleCancel}
+          />
         )}
       </form>
       <div className="flex flex-col gap-4 mt-6">
@@ -263,7 +255,7 @@ const Profile = () => {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
