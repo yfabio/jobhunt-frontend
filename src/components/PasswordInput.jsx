@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const PasswordInput = ({ id, title, value, onChange }) => {
+const PasswordInput = ({ id, title, value, onChange, onBlur }) => {
   const [showPass, setShowPass] = useState(false);
 
   return (
@@ -20,11 +20,13 @@ const PasswordInput = ({ id, title, value, onChange }) => {
           placeholder="Current Password"
           value={value}
           onChange={onChange}
-          className="block py-2 border rounded w-full pl-4"
+          onBlur={onBlur}
+          className={`block py-2 border rounded w-full pl-4`}
         />
         <button
-          onClick={() => setShowPass((prev) => !prev)}
-          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 text-gray-500 cursor-pointer">
+          type="button"
+          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 text-gray-500 cursor-pointer"
+          onClick={() => setShowPass((prev) => !prev)}>
           {showPass ? <FaEye size={22} /> : <FaEyeSlash size={22} />}
         </button>
       </div>

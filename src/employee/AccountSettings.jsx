@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import ButtonsAction from "../components/ButtonsAction";
 import PasswordInput from "../components/PasswordInput";
 import useValidate from "../hooks/useValidate";
 import AccountSettingsEmailInput from "../model/AccountSettingsEmailInput";
 import AccountSettingsPassInput from "../model/AccountSettingsPassInput";
+import MessageError from "../components/MessageError";
 
 const AccountSettings = () => {
   const [editEmail, setEditEmail] = useState(false);
   const [editPass, setEditPass] = useState(false);
+  const [errorEmailMessages, setErrorEmailMessages] = useState([]);
 
   const [emailState, emailDispatch, formDataEmail] = useValidate(
     AccountSettingsEmailInput
@@ -38,12 +40,51 @@ const AccountSettings = () => {
     e.preventDefault();
     console.log(formDataEmail);
     setEditEmail(false);
+    setErrorEmailMessages([]);
   };
 
   const handleSubmitPassword = (e) => {
     e.preventDefault();
     console.log(formDataPass);
     setEditPass(false);
+  };
+
+  const handleEmailTouch = (e) => {
+    emailDispatch({ type: "TOUCH", name: e.target.name, touched: true });
+    if (e.target.name === "email") {
+      setErrorEmailMessages([]);
+    } else if (e.target.name === "password") {
+      setErrorEmailMessages([]);
+    }
+  };
+
+  const handlePassTouch = (e) => {
+    passDispatch({ type: "TOUCH", name: e.target.name, touched: true });
+  };
+
+  useEffect(() => {
+    if (emailState && emailState.email.touched && !emailState.email.isValid) {
+      setErrorEmailMessages((prev) => [
+        ...new Set([...prev, "Email is required"]),
+      ]);
+    }
+  }, [emailState]);
+
+  useEffect(() => {
+    if (
+      emailState &&
+      emailState.password.touched &&
+      !emailState.password.isValid
+    ) {
+      setErrorEmailMessages((prev) => [
+        ...new Set([...prev, "Password is required"]),
+      ]);
+    }
+  }, [emailState]);
+
+  const handleEmailCancel = () => {
+    setEditEmail(false);
+    setErrorEmailMessages([null]);
   };
 
   return (
@@ -53,6 +94,12 @@ const AccountSettings = () => {
         <h2 className="font-semibold text-2xl text-slate-600 mb-4">
           Email and Password
         </h2>
+        {errorEmailMessages.map((message) => (
+          <MessageError
+            key={message}
+            message={message}
+          />
+        ))}
         <div className="flex flex-col">
           <div className="flex items-center justify-between gap-4">
             <small
@@ -85,7 +132,8 @@ const AccountSettings = () => {
                     placeholder="Email"
                     value={emailState.email.value}
                     onChange={handleEmailChange}
-                    className="block py-2 border rounded w-full pl-4"
+                    onBlur={handleEmailTouch}
+                    className={`block py-2 border rounded w-full pl-4`}
                   />
                 </div>
 
@@ -94,11 +142,12 @@ const AccountSettings = () => {
                   title={"Password"}
                   value={emailState.password.value}
                   onChange={handleEmailChange}
+                  onBlur={handleEmailTouch}
                 />
 
                 <ButtonsAction
                   disabled={!emailState.isFormValid}
-                  onCancel={() => setEditEmail(false)}
+                  onCancel={handleEmailCancel}
                 />
               </div>
             </form>
@@ -125,6 +174,7 @@ const AccountSettings = () => {
                   title={"Re-enter your current password"}
                   value={passState.currentPass.value}
                   onChange={handlePassChange}
+                  onBlur={handlePassTouch}
                 />
 
                 <PasswordInput
@@ -132,6 +182,7 @@ const AccountSettings = () => {
                   title={"New password"}
                   value={passState.newPassword.value}
                   onChange={handlePassChange}
+                  onBlur={handlePassTouch}
                 />
 
                 <PasswordInput
@@ -139,6 +190,7 @@ const AccountSettings = () => {
                   title={"Re-enter new password"}
                   value={passState.reenterPassword.value}
                   onChange={handlePassChange}
+                  onBlur={handlePassTouch}
                 />
 
                 <ButtonsAction
