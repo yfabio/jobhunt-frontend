@@ -5,6 +5,7 @@ import PasswordInput from "../components/PasswordInput";
 import useValidate from "../hooks/useValidate";
 import AccountSettingsEmailInput from "../model/AccountSettingsEmailInput";
 import AccountSettingsPassInput from "../model/AccountSettingsPassInput";
+import MessageBoxError from "../components/MessageBoxError";
 import MessageError from "../components/MessageError";
 
 const AccountSettings = () => {
@@ -28,27 +29,6 @@ const AccountSettings = () => {
     });
   };
 
-  const handlePassChange = (e) => {
-    passDispatch({
-      type: "CHANGE",
-      name: e.target.name,
-      value: e.target.value,
-    });
-  };
-
-  const handleSubmitEmail = (e) => {
-    e.preventDefault();
-    console.log(formDataEmail);
-    setEditEmail(false);
-    setErrorEmailMessages([]);
-  };
-
-  const handleSubmitPassword = (e) => {
-    e.preventDefault();
-    console.log(formDataPass);
-    setEditPass(false);
-  };
-
   const handleEmailTouch = (e) => {
     emailDispatch({ type: "TOUCH", name: e.target.name, touched: true });
     if (e.target.name === "email") {
@@ -56,10 +36,6 @@ const AccountSettings = () => {
     } else if (e.target.name === "password") {
       setErrorEmailMessages([]);
     }
-  };
-
-  const handlePassTouch = (e) => {
-    passDispatch({ type: "TOUCH", name: e.target.name, touched: true });
   };
 
   useEffect(() => {
@@ -87,6 +63,33 @@ const AccountSettings = () => {
     setErrorEmailMessages([null]);
   };
 
+  const handleSubmitEmail = (e) => {
+    e.preventDefault();
+    console.log(formDataEmail);
+    setEditEmail(false);
+    setErrorEmailMessages([]);
+  };
+
+  // Password handlers
+
+  const handlePassChange = (e) => {
+    passDispatch({
+      type: "CHANGE",
+      name: e.target.name,
+      value: e.target.value,
+    });
+  };
+
+  const handlePassTouch = (e) => {
+    passDispatch({ type: "TOUCH", name: e.target.name, touched: true });
+  };
+
+  const handleSubmitPassword = (e) => {
+    e.preventDefault();
+    console.log(formDataPass);
+    setEditPass(false);
+  };
+
   return (
     <section className="rounded p-6 border-[1px] border-gray-200">
       <h1 className="text-2xl font-bold my-20">Account Settings</h1>
@@ -95,7 +98,7 @@ const AccountSettings = () => {
           Email and Password
         </h2>
         {errorEmailMessages.map((message) => (
-          <MessageError
+          <MessageBoxError
             key={message}
             message={message}
           />
@@ -140,6 +143,7 @@ const AccountSettings = () => {
                 <PasswordInput
                   id={"password"}
                   title={"Password"}
+                  placeholder="Current Password"
                   value={emailState.password.value}
                   onChange={handleEmailChange}
                   onBlur={handleEmailTouch}
@@ -175,7 +179,17 @@ const AccountSettings = () => {
                   value={passState.currentPass.value}
                   onChange={handlePassChange}
                   onBlur={handlePassTouch}
+                  isValid={
+                    passState.currentPass.touched &&
+                    !passState.currentPass.isValid
+                  }
                 />
+                {passState.currentPass.touched &&
+                  !passState.currentPass.isValid && (
+                    <MessageError>
+                      Current password must be at least 4 characters, no spaces
+                    </MessageError>
+                  )}
 
                 <PasswordInput
                   id={"newPassword"}
@@ -183,7 +197,17 @@ const AccountSettings = () => {
                   value={passState.newPassword.value}
                   onChange={handlePassChange}
                   onBlur={handlePassTouch}
+                  isValid={
+                    passState.newPassword.touched &&
+                    !passState.newPassword.isValid
+                  }
                 />
+                {passState.newPassword.touched &&
+                  !passState.newPassword.isValid && (
+                    <MessageError>
+                      New password must be at least 4 characters, no spaces
+                    </MessageError>
+                  )}
 
                 <PasswordInput
                   id={"reenterPassword"}
@@ -191,7 +215,18 @@ const AccountSettings = () => {
                   value={passState.reenterPassword.value}
                   onChange={handlePassChange}
                   onBlur={handlePassTouch}
+                  isValid={
+                    passState.reenterPassword.touched &&
+                    !passState.reenterPassword.isValid
+                  }
                 />
+                {passState.reenterPassword.touched &&
+                  !passState.reenterPassword.isValid && (
+                    <MessageError>
+                      Re-enter new password must be at least 4 characters, no
+                      spaces
+                    </MessageError>
+                  )}
 
                 <ButtonsAction
                   disabled={!passState.isFormValid}

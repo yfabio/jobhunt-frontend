@@ -2,7 +2,15 @@ import { useState } from "react";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const PasswordInput = ({ id, title, value, onChange, onBlur }) => {
+const PasswordInput = ({
+  id,
+  title,
+  value,
+  placeholder = "",
+  onChange,
+  onBlur,
+  isValid = false,
+}) => {
   const [showPass, setShowPass] = useState(false);
 
   return (
@@ -17,11 +25,13 @@ const PasswordInput = ({ id, title, value, onChange, onBlur }) => {
           type={showPass ? "text" : "password"}
           name={id}
           id={id}
-          placeholder="Current Password"
+          placeholder={placeholder}
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          className={`block py-2 border rounded w-full pl-4`}
+          className={`block py-2  rounded w-full pl-4 outline-0 border transition-colors duration-200  ${
+            isValid ? "border-red-500 bg-red-100" : ""
+          }`}
         />
         <button
           type="button"
