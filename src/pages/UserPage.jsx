@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
@@ -23,6 +23,21 @@ const UserPage = () => {
     },
   ]);
 
+  const [image, setImage] = useState();
+
+  const imagePickerRef = useRef();
+
+  const handleImage = (e) => {
+    if (e.target.files && e.target.files.length === 1) {
+      const pickedImage = e.target.files[0];
+      setImage(pickedImage);
+    }
+  };
+
+  const handleImagePicker = (e) => {
+    imagePickerRef.current.click();
+  };
+
   const { logout } = useAuthCtx();
 
   const onMenuSelected = (label) => {
@@ -37,6 +52,10 @@ const UserPage = () => {
       })
     );
   };
+
+  useEffect(() => {
+    console.log("Image was set");
+  }, [image]);
 
   const selected = menu.find((item) => item.selected);
 
@@ -61,9 +80,20 @@ const UserPage = () => {
             <div className="flex flex-col gap-2">
               <div className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-white">
                 <span className="text-4xl font-bold ">{"FY"}</span>
-                <button className="flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer absolute -bottom-1 right-1">
+                <button
+                  onClick={handleImagePicker}
+                  className="flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer absolute -bottom-1 right-1">
                   <FaPen size={10} />
                 </button>
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  className="hidden"
+                  accept=".png,.jpg,.jpeg"
+                  ref={imagePickerRef}
+                  onChange={handleImage}
+                />
               </div>
               <h2 className="font-semibold text-2xl">Fabio Yamashita</h2>
               <p className="font-light text-gray-500">
