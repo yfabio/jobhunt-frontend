@@ -203,6 +203,38 @@ const Profile = () => {
             <span className="text-red-500 text-sm">Location is required</span>
           )}
         </div>
+
+        <div>
+          <label
+            htmlFor="employer"
+            className="text-sm">
+            Employer
+          </label>
+          {edit && (
+            <input
+              type="text"
+              name="employer"
+              id="employer"
+              value={state.employer.value}
+              onChange={handleChange}
+              onBlur={handleTouch}
+              placeholder="Employer"
+              className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200 
+                  ${
+                    state.employer.touched && !state.employer.isValid
+                      ? "border-red-500 bg-red-100 placeholder:text-red-600"
+                      : ""
+                  }`}
+            />
+          )}
+          {!edit && <p className="text-lg">Tata Consultancy Services</p>}
+          {edit && state.employer.touched && !state.employer.isValid && (
+            <span className="text-red-500 text-sm">
+              Employer name is required
+            </span>
+          )}
+        </div>
+
         <div>
           <label
             htmlFor="primaryIndustry"

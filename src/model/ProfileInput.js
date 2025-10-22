@@ -30,6 +30,12 @@ export default {
     touched: false,
     validators: [VALIDATOR_REQUIRE()],
   },
+  employer: {
+    value: "",
+    isValid: false,
+    touched: false,
+    validators: [VALIDATOR_REQUIRE()],
+  },
   primaryIndustry: {
     value: "tech",
     isValid: true,
