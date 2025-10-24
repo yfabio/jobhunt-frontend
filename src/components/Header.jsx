@@ -76,11 +76,6 @@ const Header = () => {
             {isLogin && (
               <>
                 <li>
-                  <NavLink to={"/"}>
-                    <FaBookmark />
-                  </NavLink>
-                </li>
-                <li>
                   <NavLink to={"/user"}>
                     <FaUser />
                   </NavLink>
