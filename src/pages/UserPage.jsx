@@ -53,9 +53,7 @@ const UserPage = () => {
     );
   };
 
-  useEffect(() => {
-    console.log("Image was set");
-  }, [image]);
+  useEffect(() => {}, [image]);
 
   const selected = menu.find((item) => item.selected);
 
