@@ -46,10 +46,12 @@ const PdfViewer = ({ file, reset }) => {
   return (
     <>
       {display && (
-        <Modal close={handleClose}>
+        <Modal
+          close={handleClose}
+          title={"User resume file"}>
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-2">
+            className="flex flex-col gap-4">
             <Document
               file={{ data: pdfData }}
               onLoadSuccess={handleSucces}

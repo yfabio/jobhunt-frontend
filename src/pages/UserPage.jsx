@@ -6,6 +6,11 @@ import Profile from "../employee/Profile";
 import Jobs from "../employee/Jobs";
 import AccountSettings from "../employee/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
+import Modal from "../components/Modal";
+import ImagePicker from "../components/ImagePicker";
+import ButtonsAction from "../components/ButtonsAction";
+import MessageError from "../components/MessageError";
+import imageTypes from "../util/imageTypes";
 
 const UserPage = () => {
   const [menu, setMenu] = useState([
@@ -23,14 +28,25 @@ const UserPage = () => {
     },
   ]);
 
+  const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
 
   const imagePickerRef = useRef();
 
+  const MAX_FILE_SIZE_MB = 1;
+
   const handleImage = (e) => {
     if (e.target.files && e.target.files.length === 1) {
-      const pickedImage = e.target.files[0];
-      setImage(pickedImage);
+      const file = e.target.files[0];
+
+      if (file && imageTypes.includes(file.type)) {
+        const fileSizeMB = file.size / 1024 / 1024;
+        if (fileSizeMB > MAX_FILE_SIZE_MB) {
+          setTooBigFileError(true);
+        } else {
+          setImage(file);
+        }
+      }
     }
   };
 
@@ -53,8 +69,6 @@ const UserPage = () => {
     );
   };
 
-  useEffect(() => {}, [image]);
-
   const selected = menu.find((item) => item.selected);
 
   const renderComponent = () => {
@@ -70,8 +84,30 @@ const UserPage = () => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(image);
+    setImage(null);
+    setTooBigFileError(false);
+  };
+
   return (
     <section className="container mx-auto">
+      {image && (
+        <Modal
+          close={() => setImage(null)}
+          title={"User Image"}>
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4">
+            <ImagePicker file={image} />
+            <ButtonsAction
+              disabled={!image}
+              onCancel={() => setImage(null)}
+            />
+          </form>
+        </Modal>
+      )}
       <div className="flex flex-col md:flex-row gap-4">
         <aside className="md:h-screen w-80 p-2">
           <div>
@@ -123,6 +159,13 @@ const UserPage = () => {
           </div>
         </aside>
         <div className="rounded w-full">{renderComponent()}</div>
+        {tooBigFileError && (
+          <Modal
+            close={() => setTooBigFileError(false)}
+            title={"Image Error"}>
+            <MessageError>File too big, only 1MB is accepted</MessageError>
+          </Modal>
+        )}
       </div>
     </section>
   );

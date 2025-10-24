@@ -5,13 +5,12 @@ import useValidate from "../hooks/useValidate";
 import ProfileInputs from "../model/ProfileInput";
 import ButtonsAction from "../components/ButtonsAction";
 import PdfViewer from "../components/PDFViewer";
-import MessageBoxError from "../components/MessageBoxError";
 import MessageError from "../components/MessageError";
 import Modal from "../components/Modal";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
-  const [file, setFile] = useState(null);
+  const [pdf, setPdf] = useState(null);
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
 
@@ -53,7 +52,7 @@ const Profile = () => {
         if (fileSizeMB > MAX_FILE_SIZE_MB) {
           setTooBigFileError(true);
         } else {
-          setFile(file);
+          setPdf(file);
         }
       }
     }
@@ -61,10 +60,10 @@ const Profile = () => {
 
   return (
     <>
-      {file && (
+      {pdf && (
         <PdfViewer
-          file={file}
-          reset={() => setFile(null)}
+          file={pdf}
+          reset={() => setPdf(null)}
         />
       )}
       <section className="rounded p-6 border-[1px] border-gray-200">
@@ -309,7 +308,9 @@ const Profile = () => {
             />
           </div>
           {tooBigFileError && (
-            <Modal close={() => setTooBigFileError(false)}>
+            <Modal
+              close={() => setTooBigFileError(false)}
+              title={"File Error"}>
               <MessageError>File too big, only 2MB is accepted</MessageError>
             </Modal>
           )}
