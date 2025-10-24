@@ -2,14 +2,11 @@ import { FaXmark } from "react-icons/fa6";
 import { FaBan } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
-const MessageBoxError = ({ message, reset = () => {} }) => {
+const MessageBoxError = ({ message }) => {
   const [show, setShow] = useState(message);
 
   useEffect(() => {
-    const time = setTimeout(() => {
-      reset();
-      setShow(null);
-    }, 3000);
+    const time = setTimeout(() => setShow(null), 3000);
     return () => {
       clearTimeout(time);
     };

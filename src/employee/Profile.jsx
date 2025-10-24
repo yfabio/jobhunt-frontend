@@ -6,6 +6,8 @@ import ProfileInputs from "../model/ProfileInput";
 import ButtonsAction from "../components/ButtonsAction";
 import PdfViewer from "../components/PDFViewer";
 import MessageBoxError from "../components/MessageBoxError";
+import MessageError from "../components/MessageError";
+import Modal from "../components/Modal";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
@@ -307,10 +309,9 @@ const Profile = () => {
             />
           </div>
           {tooBigFileError && (
-            <MessageBoxError
-              message={"File too big, only 2MB is accepted."}
-              reset={() => setTooBigFileError(false)}
-            />
+            <Modal close={() => setTooBigFileError(false)}>
+              <MessageError>File too big, only 2MB is accepted</MessageError>
+            </Modal>
           )}
         </div>
       </section>
