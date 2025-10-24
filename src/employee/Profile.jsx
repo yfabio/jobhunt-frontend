@@ -1,20 +1,21 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import { FaPen, FaUpload } from "react-icons/fa";
 
 import useValidate from "../hooks/useValidate";
-
 import ProfileInputs from "../model/ProfileInput";
-
-import { FaPen, FaUpload } from "react-icons/fa";
 import ButtonsAction from "../components/ButtonsAction";
 import PdfViewer from "../components/PDFViewer";
-import Modal from "../components/Modal";
+import MessageBoxError from "../components/MessageBoxError";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
   const [file, setFile] = useState(null);
+  const [tooBigFileError, setTooBigFileError] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
 
   const filePickerRef = useRef();
+
+  const MAX_FILE_SIZE_MB = 2;
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -44,8 +45,14 @@ const Profile = () => {
   const handleFile = (e) => {
     if (e.target.files && e.target.files.length === 1) {
       const file = e.target.files[0];
+
       if (file && file.type === "application/pdf") {
-        setFile(file);
+        const fileSizeMB = file.size / 1024 / 1024;
+        if (fileSizeMB > MAX_FILE_SIZE_MB) {
+          setTooBigFileError(true);
+        } else {
+          setFile(file);
+        }
       }
     }
   };
@@ -299,6 +306,12 @@ const Profile = () => {
               onChange={handleFile}
             />
           </div>
+          {tooBigFileError && (
+            <MessageBoxError
+              message={"File too big, only 2MB is accepted."}
+              reset={() => setTooBigFileError(false)}
+            />
+          )}
         </div>
       </section>
     </>
