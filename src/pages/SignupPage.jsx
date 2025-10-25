@@ -6,7 +6,7 @@ import { useAuthCtx } from "../context/AuthContext";
 
 import useValidate from "../hooks/useValidate";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [state, dispatch, formData] = useValidate(SignupInput);
 
   const { login } = useAuthCtx();
@@ -126,4 +126,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

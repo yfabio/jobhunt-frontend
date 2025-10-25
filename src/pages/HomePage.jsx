@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate, useLocation } from "react-router";
+import { Routes, Route, useNavigate, useLocation, Outlet } from "react-router";
 
 import FilterJobs from "../components/FilterJobs";
 
@@ -6,7 +6,6 @@ import JobItem from "../employee/JobItem";
 import Pagination from "../components/Pagination";
 
 import { useJobsCtx } from "../context/JobsContext";
-import JobInfo from "../employee/JobInfo";
 import { useEffect } from "react";
 
 const HomePage = () => {
@@ -36,13 +35,9 @@ const HomePage = () => {
             ))}
             <Pagination />
           </div>
-
-          <Routes>
-            <Route
-              path="/:id"
-              Component={JobInfo}
-            />
-          </Routes>
+          <div className="flex-2">
+            <Outlet />
+          </div>
         </div>
       </section>
     </>
