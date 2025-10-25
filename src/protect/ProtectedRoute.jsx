@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router";
 import { useAuthCtx } from "../context/AuthContext";
 
 const ProtectedRoute = ({ element }) => {
-  const { isLogin } = useAuthCtx();
+  const { user } = useAuthCtx();
 
-  if (!isLogin) {
+  if (!user) {
     return (
       <Navigate
         to="/signin"

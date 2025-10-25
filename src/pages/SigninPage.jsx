@@ -21,10 +21,9 @@ const SigninPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(formData);
+    const role = formData.email.includes("member") ? "member" : "business";
+    login(role);
     navigate("/", { replace: true });
-    login();
   };
 
   return (

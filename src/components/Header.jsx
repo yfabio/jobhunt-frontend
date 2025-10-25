@@ -9,7 +9,7 @@ const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const sidePanelRef = useRef();
 
-  const { isLogin, logout } = useAuthCtx();
+  const { user, logout } = useAuthCtx();
 
   const toggleDrawerHandler = () => {
     setIsDrawerOpen((prev) => !prev);
@@ -59,12 +59,12 @@ const Header = () => {
         </NavLink>
         <nav className="hidden md:block">
           <ul className="flex items-center text-xl justify-between gap-4">
-            {!isLogin && (
+            {!user.isLogin && (
               <li className="font-semibold text-sky-600 hover:underline">
                 <NavLink to="/signin">Sign In</NavLink>
               </li>
             )}
-            {isLogin && (
+            {user.isLogin && (
               <li className="group font-semibold text-sky-600 hover:underline">
                 <button
                   onClick={handleLogout}
@@ -73,19 +73,19 @@ const Header = () => {
                 </button>
               </li>
             )}
-            {isLogin && (
-              <>
-                <li>
-                  <NavLink to={"/member"}>
-                    <FaUser />
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to={"/business"}>
-                    <FaUserTie />
-                  </NavLink>
-                </li>
-              </>
+            {user.isLogin && user.role === "member" && (
+              <li>
+                <NavLink to={"/member"}>
+                  <FaUser />
+                </NavLink>
+              </li>
+            )}
+            {user.isLogin && user.role === "business" && (
+              <li>
+                <NavLink to={"/business"}>
+                  <FaUserTie />
+                </NavLink>
+              </li>
             )}
           </ul>
         </nav>

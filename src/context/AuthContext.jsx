@@ -4,23 +4,26 @@ import { useNavigate } from "react-router";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState({
+    role: "",
+    isLogin: false,
+  });
 
   const navigate = useNavigate();
 
-  const login = () => {
-    setIsLogin(true);
+  const login = (role) => {
+    setUser({ role, isLogin: true });
   };
 
   const logout = () => {
-    setIsLogin(false);
+    setUser((prev) => ({ ...prev, isLogin: false }));
     navigate("/", { replace: true });
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isLogin,
+        user,
         login,
         logout,
       }}>

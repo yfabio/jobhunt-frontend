@@ -4,10 +4,11 @@ import AppLayout from "./AppLayout";
 import HomePage from "../pages/HomePage";
 import SigninPage from "../pages/SigninPage";
 import SignupPage from "../pages/SignupPage";
-import UserPage from "../pages/UserPage";
+import MemberPage from "../pages/MemberPage";
 import JobInfo from "../member/JobInfo";
 import NotFound from "../components/NotFound";
 import ProtectedRoute from "../protect/ProtectedRoute";
+import BusinessPage from "../pages/BusinessPage";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,11 @@ const router = createBrowserRouter([
       { path: "/signup", element: <SignupPage /> },
       {
         path: "/member",
-        element: <ProtectedRoute element={<UserPage />} />,
+        element: <ProtectedRoute element={<MemberPage />} />,
+      },
+      {
+        path: "/business",
+        element: <ProtectedRoute element={<BusinessPage />} />,
       },
     ],
   },

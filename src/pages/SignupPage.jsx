@@ -88,8 +88,8 @@ const SignupPage = () => {
               <input
                 type="radio"
                 name="role"
-                value="employee"
-                checked={state.role.value === "employee"}
+                value="member"
+                checked={state.role.value === "member"}
                 onChange={handleChange}
                 className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
               />
@@ -99,8 +99,8 @@ const SignupPage = () => {
               <input
                 type="radio"
                 name="role"
-                value="employer"
-                checked={state.role.value === "employer"}
+                value="business"
+                checked={state.role.value === "business"}
                 onChange={handleChange}
                 className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
               />

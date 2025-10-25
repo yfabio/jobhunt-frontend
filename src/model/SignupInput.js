@@ -14,7 +14,7 @@ export default {
     validators: [VALIDATOR_MINLENGTH(6)],
   },
   role: {
-    value: "employee",
+    value: "member",
     isValid: true,
     touched: false,
     validators: [VALIDATOR_REQUIRE()],
