@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { FaPen, FaUpload } from "react-icons/fa";
 
 import useValidate from "../hooks/useValidate";
-import ProfileInputs from "../model/ProfileInput";
+import ProfileInputs from "../model/member/ProfileInput";
 import ButtonsAction from "../components/ButtonsAction";
 import PdfViewer from "../components/PDFViewer";
 import MessageError from "../components/MessageError";

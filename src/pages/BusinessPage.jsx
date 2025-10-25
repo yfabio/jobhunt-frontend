@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
-import Profile from "../member/Profile";
+import Profile from "../business/Profile";
 import Jobs from "../member/Jobs";
 import AccountSettings from "../member/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
@@ -129,10 +129,8 @@ const BusinessPage = () => {
                   onChange={handleImage}
                 />
               </div>
-              <h2 className="font-semibold text-2xl">Fabio Yamashita</h2>
-              <p className="font-light text-gray-500">
-                Software Developer at Tata Consultancy Services Limited
-              </p>
+              <h2 className="font-semibold text-2xl">CGI</h2>
+              <p className="font-light text-gray-500">Consulting</p>
             </div>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
             <ul className="flex flex-col gap-3">
