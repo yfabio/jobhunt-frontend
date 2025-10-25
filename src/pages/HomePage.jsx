@@ -2,7 +2,7 @@ import { Routes, Route, useNavigate, useLocation, Outlet } from "react-router";
 
 import FilterJobs from "../components/FilterJobs";
 
-import JobItem from "../employee/JobItem";
+import JobItem from "../member/JobItem";
 import Pagination from "../components/Pagination";
 
 import { useJobsCtx } from "../context/JobsContext";

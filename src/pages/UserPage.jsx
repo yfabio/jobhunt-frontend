@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from "react";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
-import Profile from "../employee/Profile";
-import Jobs from "../employee/Jobs";
-import AccountSettings from "../employee/AccountSettings";
+import Profile from "../member/Profile";
+import Jobs from "../member/Jobs";
+import AccountSettings from "../member/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";

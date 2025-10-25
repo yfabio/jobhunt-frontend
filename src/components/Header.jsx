@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { NavLink } from "react-router";
-import { FaUser, FaBookmark } from "react-icons/fa6";
+import { FaUser, FaUserTie } from "react-icons/fa6";
 
 import SidePanel from "./SidePanel";
 import { useAuthCtx } from "../context/AuthContext";
@@ -76,8 +76,13 @@ const Header = () => {
             {isLogin && (
               <>
                 <li>
-                  <NavLink to={"/user"}>
+                  <NavLink to={"/member"}>
                     <FaUser />
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to={"/business"}>
+                    <FaUserTie />
                   </NavLink>
                 </li>
               </>

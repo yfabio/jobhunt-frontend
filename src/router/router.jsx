@@ -5,12 +5,14 @@ import HomePage from "../pages/HomePage";
 import SigninPage from "../pages/SigninPage";
 import SignupPage from "../pages/SignupPage";
 import UserPage from "../pages/UserPage";
-import JobInfo from "../employee/JobInfo";
+import JobInfo from "../member/JobInfo";
+import NotFound from "../components/NotFound";
 import ProtectedRoute from "../protect/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
+    errorElement: <NotFound />,
     children: [
       {
         path: "/",
@@ -25,7 +27,7 @@ const router = createBrowserRouter([
       { path: "/signin", element: <SigninPage /> },
       { path: "/signup", element: <SignupPage /> },
       {
-        path: "/user",
+        path: "/member",
         element: <ProtectedRoute element={<UserPage />} />,
       },
     ],
