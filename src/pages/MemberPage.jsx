@@ -12,7 +12,7 @@ import ButtonsAction from "../components/ButtonsAction";
 import MessageError from "../components/MessageError";
 import imageTypes from "../util/imageTypes";
 
-const UserPage = () => {
+const MemberPage = () => {
   const [menu, setMenu] = useState([
     {
       label: "Profile",
@@ -171,4 +171,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default MemberPage;
