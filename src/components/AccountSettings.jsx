@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
-import ButtonsAction from "../components/ButtonsAction";
-import PasswordInput from "../components/PasswordInput";
+import ButtonsAction from "./ButtonsAction";
+import PasswordInput from "./PasswordInput";
 import useValidate from "../hooks/useValidate";
 import AccountSettingsEmailInput from "../model/AccountSettingsEmailInput";
 import AccountSettingsPassInput from "../model/AccountSettingsPassInput";
-import MessageBoxError from "../components/MessageBoxError";
-import MessageError from "../components/MessageError";
+import MessageBoxError from "./MessageBoxError";
+import MessageError from "./MessageError";
 
 const AccountSettings = () => {
   const [editEmail, setEditEmail] = useState(false);

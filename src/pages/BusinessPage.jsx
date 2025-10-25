@@ -4,7 +4,7 @@ import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
 import Profile from "../business/Profile";
 import Jobs from "../member/Jobs";
-import AccountSettings from "../member/AccountSettings";
+import AccountSettings from "../components/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";

@@ -2,7 +2,7 @@ import { VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from "../util/validators";
 
 export default {
   email: {
-    value: "yfabio@member.com",
+    value: "yfabio@business.com",
     isValid: false,
     touched: false,
     validators: [VALIDATOR_REQUIRE()],
