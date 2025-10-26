@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
 import Profile from "../business/Profile";
+import PostJob from "../business/PostJob";
 import Jobs from "../member/Jobs";
 import AccountSettings from "../components/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
@@ -17,6 +18,10 @@ const BusinessPage = () => {
     {
       label: "Profile",
       selected: true,
+    },
+    {
+      label: "Post a job",
+      selected: false,
     },
     {
       label: "Jobs",
@@ -75,6 +80,8 @@ const BusinessPage = () => {
     switch (selected.label) {
       case "Profile":
         return <Profile />;
+      case "Post a job":
+        return <PostJob />;
       case "Jobs":
         return <Jobs />;
       case "Account Settings":

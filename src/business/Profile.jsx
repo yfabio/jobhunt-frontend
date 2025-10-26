@@ -106,7 +106,7 @@ const Profile = () => {
                   }`}
               />
             )}
-            {!edit && <p className="text-lg">Sao Paulo, SP Brazil</p>}
+            {!edit && <p className="text-lg">Halifax, Canada</p>}
             {edit && state.location.touched && !state.location.isValid && (
               <span className="text-red-500 text-sm">Location is required</span>
             )}
