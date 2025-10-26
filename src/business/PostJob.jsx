@@ -1,27 +1,24 @@
 import { useState } from "react";
 
 import Input from "../components/Input";
+import PostJobInput from "../model/business/PostJobInput";
 import TextArea from "../components/TextArea";
+import useValidate from "../hooks/useValidate";
+import { useJobsCtx } from "../context/JobsContext";
+import { useNavigate } from "react-router";
 
 const PostJob = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    title: "",
-    company: "",
-    location: "",
-    salary: "",
-    hoursPerWeek: "",
-    jobType: "Full-time",
-    description: "",
-    responsibilities: "",
-    requirements: "",
-    contactEmail: "",
-  });
+  const [state, dispatch, formData] = useValidate(PostJobInput);
 
   const totalSteps = 5;
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    dispatch({ type: "CHANGE", name: [e.target.name], value: e.target.value });
+  };
+
+  const handleTouch = (e) => {
+    dispatch({ type: "TOUCH", name: e.target.name, touched: true });
   };
 
   const nextStep = () => {
@@ -62,22 +59,25 @@ const PostJob = () => {
                 <Input
                   label="Company Name"
                   id="company"
-                  value={formData.company}
+                  value={state.company.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="e.g. TechNova Inc."
                 />
                 <Input
                   id="title"
                   label="Job Title"
-                  value={formData.title}
+                  value={state.title.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="e.g. Frontend Developer"
                 />
                 <Input
                   id="location"
                   label="Location"
-                  value={formData.location}
+                  value={state.location.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="e.g. Halifax, NS"
                 />
               </div>
@@ -88,14 +88,15 @@ const PostJob = () => {
                 <Input
                   id="salary"
                   label="Salary"
-                  value={formData.salary}
+                  value={state.salary.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="e.g. $60,000 / year"
                 />
                 <Input
                   id="hoursPerWeek"
                   label="Hours per Week"
-                  value={formData.hoursPerWeek}
+                  value={state.hoursPerWeek.value}
                   onChange={handleChange}
                   placeholder="e.g. 40"
                 />
@@ -108,8 +109,9 @@ const PostJob = () => {
                   <select
                     id="jobType"
                     name="jobType"
-                    value={formData.jobType}
+                    value={state.jobType.value}
                     onChange={handleChange}
+                    onBlur={handleTouch}
                     className="w-full p-2 border rounded-md focus:ring focus:ring-indigo-300">
                     <option>Full-time</option>
                     <option>Part-time</option>
@@ -125,22 +127,25 @@ const PostJob = () => {
                 <TextArea
                   id="description"
                   label="Description"
-                  value={formData.description}
+                  value={state.description.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="Describe the job role..."
                 />
                 <TextArea
                   label="Responsibilities"
                   id="responsibilities"
-                  value={formData.responsibilities}
+                  value={state.responsibilities.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="List main responsibilities..."
                 />
                 <TextArea
                   label="Requirements"
                   id="requirements"
-                  value={formData.requirements}
+                  value={state.requirements.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="List qualifications..."
                 />
               </div>
@@ -152,8 +157,9 @@ const PostJob = () => {
                   label="Contact Email"
                   type="email"
                   id="contactEmail"
-                  value={formData.contactEmail}
+                  value={state.contactEmail.value}
                   onChange={handleChange}
+                  onBlur={handleTouch}
                   placeholder="e.g. hr@technova.com"
                 />
               </div>
