@@ -4,12 +4,14 @@ import Input from "../components/Input";
 import PostJobInput from "../model/business/PostJobInput";
 import TextArea from "../components/TextArea";
 import useValidate from "../hooks/useValidate";
-import { useJobsCtx } from "../context/JobsContext";
-import { useNavigate } from "react-router";
 
-const PostJob = () => {
+import { useJobsCtx } from "../context/JobsContext";
+
+const PostJob = ({ updateJobs }) => {
   const [step, setStep] = useState(1);
   const [state, dispatch, formData] = useValidate(PostJobInput);
+
+  const { addNewJob } = useJobsCtx();
 
   const totalSteps = 5;
 
@@ -35,7 +37,8 @@ const PostJob = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    addNewJob(formData);
+    updateJobs("Jobs");
   };
 
   return (

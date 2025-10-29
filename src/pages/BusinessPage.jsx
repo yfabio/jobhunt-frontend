@@ -4,7 +4,7 @@ import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
 import Profile from "../business/Profile";
 import PostJob from "../business/PostJob";
-import Jobs from "../member/Jobs";
+import Jobs from "../business/Jobs";
 import AccountSettings from "../components/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
 import Modal from "../components/Modal";
@@ -81,7 +81,7 @@ const BusinessPage = () => {
       case "Profile":
         return <Profile />;
       case "Post a job":
-        return <PostJob />;
+        return <PostJob updateJobs={onMenuSelected} />;
       case "Jobs":
         return <Jobs />;
       case "Account Settings":
