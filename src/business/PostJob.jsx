@@ -38,6 +38,7 @@ const PostJob = ({ updateJobs }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     addNewJob(formData);
+    console.log(formData);
     updateJobs("Jobs");
   };
 
@@ -116,10 +117,10 @@ const PostJob = ({ updateJobs }) => {
                     onChange={handleChange}
                     onBlur={handleTouch}
                     className="w-full p-2 border rounded-md focus:ring focus:ring-indigo-300">
-                    <option>Full-time</option>
-                    <option>Part-time</option>
-                    <option>Contract</option>
-                    <option>Internship</option>
+                    <option value="full-time">Full-time</option>
+                    <option value="part-time">Part-time</option>
+                    <option value="contract">Contract</option>
+                    <option value="internship">Internship</option>
                   </select>
                 </div>
               </div>

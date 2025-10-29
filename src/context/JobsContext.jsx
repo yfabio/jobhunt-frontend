@@ -29,7 +29,7 @@ export function JobsProvider({ children }) {
     setJobs(getJobs(page, limit));
   };
 
-  const getId = () => data[data.length - 1].id + 1;
+  const getId = () => data.sort((a, b) => a.id - b.id)[data.length - 1].id + 1;
 
   const addNewJob = (value) => {
     const job = { ...value, id: getId() };

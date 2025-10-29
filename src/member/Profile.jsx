@@ -274,7 +274,7 @@ const Profile = () => {
                 <option value="accounting">Accounting</option>
                 <option value="finance">Finance</option>
                 <option value="advertising">Advertising</option>
-                <option value="human_resources">Human Resources</option>
+                <option value="humanResources">Human Resources</option>
               </select>
             )}
             {!edit && <p className="text-lg">Consulting</p>}
