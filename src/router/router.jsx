@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 
 import AppLayout from "./AppLayout";
 import HomePage from "../pages/HomePage";
@@ -32,7 +32,6 @@ const router = createBrowserRouter([
           {
             path: ":id",
             element: <JobInfo />,
-            errorElement: <NotFound />,
           },
         ],
       },
@@ -42,6 +41,15 @@ const router = createBrowserRouter([
         path: "member",
         element: <ProtectedRoute element={<MemberPage />} />,
         children: [
+          {
+            index: true,
+            element: (
+              <Navigate
+                to="profile"
+                replace
+              />
+            ),
+          },
           { path: "profile", element: <MemberProfile /> },
           { path: "jobs", element: <MemberJobs /> },
           { path: "accountsettings", element: <AccountSettings /> },
@@ -51,6 +59,15 @@ const router = createBrowserRouter([
         path: "business",
         element: <ProtectedRoute element={<BusinessPage />} />,
         children: [
+          {
+            index: true,
+            element: (
+              <Navigate
+                to="profile"
+                replace
+              />
+            ),
+          },
           { path: "profile", element: <BusinessProfile /> },
           { path: "postjob", element: <BusinessPostJob /> },
           { path: "jobs", element: <BusinessJobs /> },
@@ -58,7 +75,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/*",
+        path: "*",
         element: <NotFound />,
       },
     ],

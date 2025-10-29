@@ -6,7 +6,7 @@ const JobItem = ({ job }) => {
 
   return (
     <Link
-      to={`/${job.id}`}
+      to={`${job.id}`}
       className="max-w-xl w-full rounded-xl p-4 border cursor-pointer hover:shadow-xl">
       <h2 className="text-2xl font-extrabold">{job.title}</h2>
       <p className="font-medium text-gray-500">{job.companyName}</p>
