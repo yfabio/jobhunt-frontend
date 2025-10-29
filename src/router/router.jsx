@@ -8,7 +8,8 @@ import JobInfo from "../member/JobInfo";
 import NotFound from "../components/NotFound";
 import ProtectedRoute from "../protect/ProtectedRoute";
 
-import AccountSettings from "../components/AccountSettings";
+import MemberAccountSettings from "../components/AccountSettings";
+import BussinesAccountSettings from "../components/AccountSettings";
 
 import MemberPage from "../pages/MemberPage";
 import MemberProfile from "../member/Profile";
@@ -52,7 +53,7 @@ const router = createBrowserRouter([
           },
           { path: "profile", element: <MemberProfile /> },
           { path: "jobs", element: <MemberJobs /> },
-          { path: "accountsettings", element: <AccountSettings /> },
+          { path: "accountsettings", element: <MemberAccountSettings /> },
         ],
       },
       {
@@ -71,7 +72,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <BusinessProfile /> },
           { path: "postjob", element: <BusinessPostJob /> },
           { path: "jobs", element: <BusinessJobs /> },
-          { path: "accountsettings", element: <AccountSettings /> },
+          { path: "accountsettings", element: <BussinesAccountSettings /> },
         ],
       },
       {

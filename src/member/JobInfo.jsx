@@ -1,5 +1,6 @@
-import { useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import { useJobsCtx } from "../context/JobsContext";
+import NoSuchJobFound from "../components/NoSuchJobFound";
 
 const JobInfo = () => {
   const { getJobById } = useJobsCtx();
@@ -10,7 +11,7 @@ const JobInfo = () => {
 
   return (
     <>
-      {job && (
+      {job ? (
         <section className="hidden flex-2 md:block">
           <div className="flex flex-col border border-gray-300 text-xl rounded p-4 gap-3 flex-2">
             <h2 className="text-4xl font-bold capitalize">{job.title}</h2>
@@ -51,6 +52,8 @@ const JobInfo = () => {
             </div>
           </div>
         </section>
+      ) : (
+        <Navigate to="*" />
       )}
     </>
   );
