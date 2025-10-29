@@ -7,6 +7,7 @@ import AccountSettingsEmailInput from "../model/AccountSettingsEmailInput";
 import AccountSettingsPassInput from "../model/AccountSettingsPassInput";
 import MessageBoxError from "./MessageBoxError";
 import MessageError from "./MessageError";
+import { useAuthCtx } from "../context/AuthContext";
 
 const AccountSettings = () => {
   const [editEmail, setEditEmail] = useState(false);
@@ -20,6 +21,8 @@ const AccountSettings = () => {
   const [passState, passDispatch, formDataPass] = useValidate(
     AccountSettingsPassInput
   );
+
+  const { user } = useAuthCtx();
 
   const handleEmailChange = (e) => {
     emailDispatch({
@@ -118,7 +121,7 @@ const AccountSettings = () => {
               </button>
             )}
           </div>
-          <p className="text-lg text-gray-500">fabio@pop.com</p>
+          <p className="text-lg text-gray-500">{`${user.role}@pop.com`}</p>
           {editEmail && (
             <form onSubmit={handleSubmitEmail}>
               <div className="space-y-4">
