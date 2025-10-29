@@ -1,4 +1,4 @@
-import { VALIDATOR_MINLENGTH, VALIDATOR_EMAIL } from "../util/validators";
+import { VALIDATOR_MINLENGTH, VALIDATOR_EMAIL } from "../../util/validators";
 
 export default {
   email: {

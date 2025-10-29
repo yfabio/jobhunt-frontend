@@ -8,8 +8,8 @@ import JobInfo from "../member/JobInfo";
 import NotFound from "../components/NotFound";
 import ProtectedRoute from "../protect/ProtectedRoute";
 
-import MemberAccountSettings from "../components/AccountSettings";
-import BussinesAccountSettings from "../components/AccountSettings";
+import MemberAccountSettings from "../member/AccountSettings";
+import BussinesAccountSettings from "../business/AccountSettings";
 
 import MemberPage from "../pages/MemberPage";
 import MemberProfile from "../member/Profile";

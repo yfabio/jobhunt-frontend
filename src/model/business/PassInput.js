@@ -1,4 +1,4 @@
-import { VALIDATOR_MINLENGTH } from "../util/validators";
+import { VALIDATOR_MINLENGTH } from "../../util/validators";
 
 export default {
   currentPass: {

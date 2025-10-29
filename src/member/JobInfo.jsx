@@ -1,6 +1,5 @@
 import { Navigate, useParams } from "react-router";
 import { useJobsCtx } from "../context/JobsContext";
-import NoSuchJobFound from "../components/NoSuchJobFound";
 
 const JobInfo = () => {
   const { getJobById } = useJobsCtx();

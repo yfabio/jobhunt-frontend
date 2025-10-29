@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
-import ButtonsAction from "./ButtonsAction";
-import PasswordInput from "./PasswordInput";
+import ButtonsAction from "../components/ButtonsAction";
+import PasswordInput from "../components/PasswordInput";
 import useValidate from "../hooks/useValidate";
-import AccountSettingsEmailInput from "../model/AccountSettingsEmailInput";
-import AccountSettingsPassInput from "../model/AccountSettingsPassInput";
-import MessageBoxError from "./MessageBoxError";
-import MessageError from "./MessageError";
+import EmailInput from "../model/business/EmailInput";
+import PassInput from "../model/business/PassInput";
+import MessageBoxError from "../components/MessageBoxError";
+import MessageError from "../components/MessageError";
 import { useAuthCtx } from "../context/AuthContext";
 
 const AccountSettings = () => {
@@ -14,13 +14,9 @@ const AccountSettings = () => {
   const [editPass, setEditPass] = useState(false);
   const [errorEmailMessages, setErrorEmailMessages] = useState([]);
 
-  const [emailState, emailDispatch, formDataEmail] = useValidate(
-    AccountSettingsEmailInput
-  );
+  const [emailState, emailDispatch, formDataEmail] = useValidate(EmailInput);
 
-  const [passState, passDispatch, formDataPass] = useValidate(
-    AccountSettingsPassInput
-  );
+  const [passState, passDispatch, formDataPass] = useValidate(PassInput);
 
   const { user } = useAuthCtx();
 
