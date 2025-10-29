@@ -1,43 +1,18 @@
 import { useState, useRef, useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
-
-import Profile from "../business/Profile";
-import PostJob from "../business/PostJob";
-import Jobs from "../business/Jobs";
-import AccountSettings from "../components/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
+
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";
 import ButtonsAction from "../components/ButtonsAction";
 import MessageError from "../components/MessageError";
 import imageTypes from "../util/imageTypes";
-import { Outlet, useNavigate } from "react-router";
 
 const BusinessPage = () => {
-  const [menu, setMenu] = useState([
-    {
-      label: "Profile",
-      selected: true,
-    },
-    {
-      label: "Post a job",
-      selected: false,
-    },
-    {
-      label: "Jobs",
-      selected: false,
-    },
-    {
-      label: "Account Settings",
-      selected: false,
-    },
-  ]);
-
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
-
-  const navigate = useNavigate();
 
   const imagePickerRef = useRef();
 
@@ -63,40 +38,6 @@ const BusinessPage = () => {
   };
 
   const { logout } = useAuthCtx();
-
-  const onMenuSelected = (label) => {
-    setMenu((prev) =>
-      prev.map((obj) => {
-        if (obj.label === label) {
-          obj.selected = true;
-        } else {
-          obj.selected = false;
-        }
-        return obj;
-      })
-    );
-  };
-
-  const selected = menu.find((item) => item.selected);
-
-  useEffect(() => {
-    switch (selected.label) {
-      case "Profile":
-        navigate("profile");
-        break;
-      case "Post a job":
-        navigate("postjob");
-        break;
-      case "Jobs":
-        navigate("jobs");
-        break;
-      case "Account Settings":
-        navigate("accountsettings");
-        break;
-      default:
-        return <div>Please select a menu item</div>;
-    }
-  }, [selected]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -147,17 +88,47 @@ const BusinessPage = () => {
               <p className="font-light text-gray-500">Consulting</p>
             </div>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
-            <ul className="flex flex-col gap-3">
-              {menu.map((obj) => (
-                <li
-                  key={obj.label}
-                  onClick={() => onMenuSelected(obj.label)}
-                  className={`w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer 
-                 border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
-                  ${obj.selected ? "border-l-slate-600" : ""}`}>
-                  {obj.label}
-                </li>
-              ))}
+            <ul className="flex flex-col gap-6">
+              <li>
+                <NavLink
+                  to="profile"
+                  className={({ isActive }) =>
+                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+                ${isActive ? "border-l-slate-600" : ""} `
+                  }>
+                  {"Profile"}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="postjob"
+                  className={({ isActive }) =>
+                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+                ${isActive ? "border-l-slate-600" : ""} `
+                  }>
+                  {"Post Job"}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="jobs"
+                  className={({ isActive }) =>
+                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+                ${isActive ? "border-l-slate-600" : ""} `
+                  }>
+                  {"Jobs"}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="accountsettings"
+                  className={({ isActive }) =>
+                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+                ${isActive ? "border-l-slate-600" : ""} `
+                  }>
+                  {"Account Settings"}
+                </NavLink>
+              </li>
             </ul>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
             <button
