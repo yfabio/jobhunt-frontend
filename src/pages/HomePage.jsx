@@ -16,7 +16,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (jobs.length > 0 && location.pathname === "/") {
-      navigate(`/${jobs[0].id}`, { replace: true });
+      navigate(`${jobs[0].id}`, { replace: true });
     }
   }, [jobs, location.pathname, navigate]);
 

@@ -2,15 +2,13 @@ import { useState, useRef, useEffect } from "react";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 
-import Profile from "../member/Profile";
-import Jobs from "../member/Jobs";
-import AccountSettings from "../components/AccountSettings";
 import { useAuthCtx } from "../context/AuthContext";
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";
 import ButtonsAction from "../components/ButtonsAction";
 import MessageError from "../components/MessageError";
 import imageTypes from "../util/imageTypes";
+import { Outlet, useNavigate } from "react-router";
 
 const MemberPage = () => {
   const [menu, setMenu] = useState([
@@ -30,6 +28,8 @@ const MemberPage = () => {
 
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
+
+  const navigate = useNavigate();
 
   const imagePickerRef = useRef();
 
@@ -71,18 +71,21 @@ const MemberPage = () => {
 
   const selected = menu.find((item) => item.selected);
 
-  const renderComponent = () => {
+  useEffect(() => {
     switch (selected.label) {
       case "Profile":
-        return <Profile />;
+        navigate("profile");
+        break;
       case "Jobs":
-        return <Jobs />;
+        navigate("jobs");
+        break;
       case "Account Settings":
-        return <AccountSettings />;
+        navigate("accountsettings");
+        break;
       default:
         return <div>Please select a menu item</div>;
     }
-  };
+  }, [selected]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -158,7 +161,7 @@ const MemberPage = () => {
             </button>
           </div>
         </aside>
-        <div className="rounded w-full">{renderComponent()}</div>
+        <Outlet />
         {tooBigFileError && (
           <Modal
             close={() => setTooBigFileError(false)}

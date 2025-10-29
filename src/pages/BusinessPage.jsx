@@ -12,6 +12,7 @@ import ImagePicker from "../components/ImagePicker";
 import ButtonsAction from "../components/ButtonsAction";
 import MessageError from "../components/MessageError";
 import imageTypes from "../util/imageTypes";
+import { Outlet, useNavigate } from "react-router";
 
 const BusinessPage = () => {
   const [menu, setMenu] = useState([
@@ -35,6 +36,8 @@ const BusinessPage = () => {
 
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
+
+  const navigate = useNavigate();
 
   const imagePickerRef = useRef();
 
@@ -76,20 +79,24 @@ const BusinessPage = () => {
 
   const selected = menu.find((item) => item.selected);
 
-  const renderComponent = () => {
+  useEffect(() => {
     switch (selected.label) {
       case "Profile":
-        return <Profile />;
+        navigate("profile");
+        break;
       case "Post a job":
-        return <PostJob updateJobs={onMenuSelected} />;
+        navigate("postjob");
+        break;
       case "Jobs":
-        return <Jobs />;
+        navigate("jobs");
+        break;
       case "Account Settings":
-        return <AccountSettings />;
+        navigate("accountsettings");
+        break;
       default:
         return <div>Please select a menu item</div>;
     }
-  };
+  }, [selected]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -163,7 +170,7 @@ const BusinessPage = () => {
             </button>
           </div>
         </aside>
-        <div className="rounded w-full">{renderComponent()}</div>
+        <Outlet />
         {tooBigFileError && (
           <Modal
             close={() => setTooBigFileError(false)}

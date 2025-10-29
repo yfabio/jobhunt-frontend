@@ -7,7 +7,7 @@ import useValidate from "../hooks/useValidate";
 
 import { useJobsCtx } from "../context/JobsContext";
 
-const PostJob = ({ updateJobs }) => {
+const PostJob = () => {
   const [step, setStep] = useState(1);
   const [state, dispatch, formData] = useValidate(PostJobInput);
 
@@ -38,13 +38,11 @@ const PostJob = ({ updateJobs }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     addNewJob(formData);
-    console.log(formData);
-    updateJobs("Jobs");
   };
 
   return (
     <>
-      <section className="rounded p-6 border-[1px] border-gray-200">
+      <section className="w-full rounded p-6 border-[1px] border-gray-200">
         <h1 className="text-2xl font-bold my-20">Post a New Job</h1>
         <div className="mb-8">
           <div className="w-full bg-gray-200 h-2 rounded-full">

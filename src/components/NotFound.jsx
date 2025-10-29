@@ -1,9 +1,7 @@
 import { FaArrowLeft } from "react-icons/fa6";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 
 const NotFound = () => {
-  const navigate = useNavigate();
-
   return (
     <section>
       <div className="flex flex-col items-center justify-center mt-30 gap-2 p-4">
@@ -14,11 +12,11 @@ const NotFound = () => {
         </p>
         <div className="group flex items-center gap-2 ">
           <FaArrowLeft className="text-indigo-600 group-hover:cursor-pointer" />
-          <button
-            onClick={() => navigate("/")}
+          <Link
+            to="/"
             className="border-o bg-none group-hover:cursor-pointer text-indigo-600">
             Back to home
-          </button>
+          </Link>
         </div>
       </div>
     </section>
