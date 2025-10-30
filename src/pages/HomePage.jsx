@@ -22,7 +22,7 @@ const HomePage = () => {
 
   return (
     <>
-      <section className="container mx-auto p-6">
+      <section className="container mx-auto">
         {/* Filter */}
         <FilterJobs />
         <div className="flex flex-col gap-5 mt-4 md:flex-row">

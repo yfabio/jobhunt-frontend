@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    setUser((prev) => ({ ...prev, isLogin: false }));
+    setUser((prev) => ({ role: "", isLogin: false }));
     navigate("/", { replace: true });
   };
 
