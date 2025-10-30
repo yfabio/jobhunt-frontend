@@ -7,12 +7,16 @@ import ButtonsAction from "../components/ButtonsAction";
 import PdfViewer from "../components/PDFViewer";
 import MessageError from "../components/MessageError";
 import Modal from "../components/Modal";
+import Dropdown from "../components/Dropdown";
 
 const Profile = () => {
   const [edit, setEdit] = useState(false);
   const [pdf, setPdf] = useState(null);
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
+
+  const [option, setOption] = useState(null);
+  const [show, setShow] = useState(false);
 
   const filePickerRef = useRef();
 
@@ -58,8 +62,36 @@ const Profile = () => {
     }
   };
 
+  const handleDropdownOption = (value) => {
+    setOption(value);
+    setShow(true);
+  };
+
+  const handleResumeDeletion = (e) => {
+    e.preventDefault();
+    setShow(false);
+  };
+
   return (
     <>
+      {option === "delete" && show && (
+        <Modal
+          title="Remove Resume"
+          close={() => setShow(false)}>
+          <form
+            onSubmit={handleResumeDeletion}
+            className="flex flex-col gap-2">
+            <p className="text-center font-medium text-red-500">
+              Do you really want to delete?
+            </p>
+            <ButtonsAction
+              onCancel={() => setShow(false)}
+              btnLeft="No"
+              btnRight="Yes"
+            />
+          </form>
+        </Modal>
+      )}
       {pdf && (
         <PdfViewer
           file={pdf}
@@ -289,23 +321,26 @@ const Profile = () => {
         </form>
         <div className="flex flex-col gap-4 mt-6">
           <h2 className="font-semibold text-2xl text-slate-600">CV</h2>
-          <div
-            onClick={handleFilePicker}
-            className="flex py-4 px-4 gap-2 cursor-pointer rounded border border-dotted">
-            <FaUpload size={22} />
-            <div>
-              <h3 className="text-xl">Upload CV</h3>
-              <p className="text-sm">Use a pdf file only</p>
+          <div className="flex items-center justify-between py-4 px-4 gap-2 cursor-pointer rounded border border-dotted">
+            <div
+              onClick={handleFilePicker}
+              className="flex gap-2">
+              <FaUpload size={22} />
+              <div>
+                <h3 className="text-xl">Upload CV</h3>
+                <p className="text-sm">Use a pdf file only</p>
+              </div>
+              <input
+                id="cv"
+                type="file"
+                name="cv"
+                className="hidden"
+                accept=".pdf"
+                ref={filePickerRef}
+                onChange={handleFile}
+              />
             </div>
-            <input
-              id="cv"
-              type="file"
-              name="cv"
-              className="hidden"
-              accept=".pdf"
-              ref={filePickerRef}
-              onChange={handleFile}
-            />
+            <Dropdown selected={handleDropdownOption} />
           </div>
           {tooBigFileError && (
             <Modal
