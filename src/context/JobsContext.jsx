@@ -33,7 +33,11 @@ export function JobsProvider({ children }) {
 
   const addNewJob = (value) => {
     const job = { ...value, id: getId() };
-    setData((prev) => [...prev, job]);
+    setData((prev) => {
+      const loads = [...prev];
+      loads.unshift(job);
+      return loads;
+    });
   };
 
   const getJobById = (id) => {

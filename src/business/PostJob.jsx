@@ -6,12 +6,15 @@ import TextArea from "../components/TextArea";
 import useValidate from "../hooks/useValidate";
 
 import { useJobsCtx } from "../context/JobsContext";
+import { replace, useNavigate } from "react-router";
 
 const PostJob = () => {
   const [step, setStep] = useState(1);
   const [state, dispatch, formData] = useValidate(PostJobInput);
 
   const { addNewJob } = useJobsCtx();
+
+  const navigate = useNavigate();
 
   const totalSteps = 5;
 
@@ -21,6 +24,10 @@ const PostJob = () => {
 
   const handleTouch = (e) => {
     dispatch({ type: "TOUCH", name: e.target.name, touched: true });
+  };
+
+  const clear = () => {
+    dispatch({ type: "CLEAR" });
   };
 
   const nextStep = () => {
@@ -38,6 +45,8 @@ const PostJob = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     addNewJob(formData);
+    navigate("../jobs");
+    clear();
   };
 
   return (

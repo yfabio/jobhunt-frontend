@@ -34,6 +34,17 @@ const formReducer = (state, action) => {
         ...state,
         [action.name]: input,
       };
+    case "CLEAR":
+      for (const key in state) {
+        state[key].value = "";
+        state[key].isValid = false;
+        state[key].touched = false;
+        state[key].validators = [];
+      }
+      return {
+        ...state,
+        isFormValid: false,
+      };
     default:
       return state;
   }
