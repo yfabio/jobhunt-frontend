@@ -32,7 +32,7 @@ const JobInfo = () => {
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <p className="font-bold text-center text-rose-500">
-                Are you sure you want apply for this job?
+                Are you sure, you want to apply for this job?
               </p>
               <div className="border-[1px] border-gray-100 p-6 rounded">
                 <h2 className="font-bold text-lg">{modal.job.title}</h2>
@@ -95,7 +95,7 @@ const JobInfo = () => {
               </p>
             </div>
             <div className="flex flex-col gap-2">
-              <h2 className="text-2xl font-bold">Full job requirements  </h2>
+              <h2 className="text-2xl font-bold">Full job requirements </h2>
               <p className="text-gray-500 text-justify">{job.requirements}</p>
             </div>
           </div>
