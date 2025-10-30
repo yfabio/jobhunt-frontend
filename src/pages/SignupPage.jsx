@@ -93,7 +93,7 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
               />
-              <span className="text-gray-700 font-medium">Employee</span>
+              <span className="text-gray-700 font-medium">Member</span>
             </label>
             <label className="flex items-center space-x-2 cursor-pointer">
               <input
@@ -104,7 +104,7 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
               />
-              <span className="text-gray-700 font-medium">Employer</span>
+              <span className="text-gray-700 font-medium">Business</span>
             </label>
           </div>
           <div className="mt-2">
