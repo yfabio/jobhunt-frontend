@@ -8,7 +8,7 @@ const Modal = ({ children, title, close }) => {
         onClick={close}
         className="absolute inset-0 bg-[rgba(0,0,0,0.30)]"></div>
 
-      <div className="max-h-3/4 relative bg-white rounded overflow-hidden overflow-y-scroll shadow-lg p-6 z-10">
+      <div className="max-h-[calc(100%-4rem)] relative bg-white rounded overflow-y-auto scrollbar-hidden  shadow-lg p-6 z-10">
         <h1 className="text-lg font-semibold">{title}</h1>
         <div className="flex justify-end border-b pb-3">
           <button

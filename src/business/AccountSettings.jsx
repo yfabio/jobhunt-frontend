@@ -12,10 +12,21 @@ import { useAuthCtx } from "../context/AuthContext";
 const AccountSettings = () => {
   const [editEmail, setEditEmail] = useState(false);
   const [editPass, setEditPass] = useState(false);
+
+  /**
+   * This state shows the error messages when the user tries to changer
+   * his or her email, they must type their current password to allow this
+   * action to proceed.
+   */
   const [errorEmailMessages, setErrorEmailMessages] = useState([]);
 
   const [emailState, emailDispatch, formDataEmail] = useValidate(EmailInput);
 
+  /**
+   *
+   * This state is used to manage the password change, and unlike email the password
+   * change handle error messages differently from email change.
+   */
   const [passState, passDispatch, formDataPass] = useValidate(PassInput);
 
   const { user } = useAuthCtx();

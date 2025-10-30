@@ -5,6 +5,8 @@ const TextArea = ({
   onChange,
   onBlur = () => {},
   placeholder,
+  isValid = false,
+  message = "",
 }) => {
   return (
     <div>
@@ -21,9 +23,13 @@ const TextArea = ({
         onBlur={onBlur}
         placeholder={placeholder}
         rows="3"
-        className="w-full p-2 border rounded-md focus:ring focus:ring-indigo-300"
+        className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200 
+          ${
+            isValid ? "border-red-500 bg-red-100 placeholder:text-red-600" : ""
+          }`}
         required
       />
+      {isValid && <span className="text-red-500 text-sm">{message}</span>}
     </div>
   );
 };

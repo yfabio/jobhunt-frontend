@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Input from "../components/Input";
 import PostJobInput from "../model/business/PostJobInput";
 import TextArea from "../components/TextArea";
 import useValidate from "../hooks/useValidate";
+import Modal from "../components/Modal";
 
 import { useJobsCtx } from "../context/JobsContext";
-import { replace, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import ButtonsAction from "../components/ButtonsAction";
 
 const PostJob = () => {
   const [step, setStep] = useState(1);
   const [state, dispatch, formData] = useValidate(PostJobInput);
+  const [show, setShow] = useState(false);
 
   const { addNewJob } = useJobsCtx();
 
@@ -42,6 +45,14 @@ const PostJob = () => {
     }
   };
 
+  useEffect(() => {
+    if (step === 5) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  }, [step]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     addNewJob(formData);
@@ -51,6 +62,40 @@ const PostJob = () => {
 
   return (
     <>
+      {show && (
+        <Modal
+          title={"Summary job"}
+          close={() => setShow(false)}>
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-2 w-4xl">
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-center">
+                Review Your Job Post
+              </h3>
+              <div className="space-y-2 text-gray-700">
+                {Object.entries(formData).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="flex justify-between border-b pb-1 text-sm">
+                    <span className="capitalize font-medium">
+                      {key.replace(/([A-Z])/g, " $1")}
+                    </span>
+                    <span className="text-right text-gray-600">
+                      {value || "—"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <ButtonsAction
+              btnLeft="No"
+              btnRight="Yes"
+              onCancel={() => setShow(false)}
+            />
+          </form>
+        </Modal>
+      )}
       <section className="w-full rounded p-6 border-[1px] border-gray-200">
         <h1 className="text-2xl font-bold my-20">Post a New Job</h1>
         <div className="mb-8">
@@ -63,7 +108,7 @@ const PostJob = () => {
             Step {step} of {totalSteps}
           </p>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="transition-all duration-500 ease-in-out">
             {step === 1 && (
               <div className="space-y-4 ">
@@ -74,6 +119,8 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="e.g. TechNova Inc."
+                  isValid={state.company.touched && !state.company.isValid}
+                  message="Company name is required"
                 />
                 <Input
                   id="title"
@@ -82,6 +129,8 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="e.g. Frontend Developer"
+                  isValid={state.title.touched && !state.title.isValid}
+                  message="Title is required"
                 />
                 <Input
                   id="location"
@@ -90,6 +139,8 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="e.g. Halifax, NS"
+                  isValid={state.location.touched && !state.location.isValid}
+                  message="Location is required"
                 />
               </div>
             )}
@@ -99,17 +150,25 @@ const PostJob = () => {
                 <Input
                   id="salary"
                   label="Salary"
+                  type="number"
                   value={state.salary.value}
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="e.g. $60,000 / year"
+                  isValid={state.salary.touched && !state.salary.isValid}
+                  message="Salary is required"
                 />
                 <Input
                   id="hoursPerWeek"
+                  type="number"
                   label="Hours per Week"
                   value={state.hoursPerWeek.value}
                   onChange={handleChange}
                   placeholder="e.g. 40"
+                  isValid={
+                    state.hoursPerWeek.touched && !state.hoursPerWeek.isValid
+                  }
+                  message="Hours Per Week is required"
                 />
                 <div>
                   <label
@@ -120,10 +179,10 @@ const PostJob = () => {
                   <select
                     id="jobType"
                     name="jobType"
-                    value={state.jobType.value}
+                    value={state.jobType.value || "full-time"}
                     onChange={handleChange}
                     onBlur={handleTouch}
-                    className="w-full p-2 border rounded-md focus:ring focus:ring-indigo-300">
+                    className="block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200">
                     <option value="full-time">Full-time</option>
                     <option value="part-time">Part-time</option>
                     <option value="contract">Contract</option>
@@ -142,6 +201,10 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="Describe the job role..."
+                  isValid={
+                    state.description.touched && !state.description.isValid
+                  }
+                  message="description is required"
                 />
                 <TextArea
                   label="Responsibilities"
@@ -150,6 +213,11 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="List main responsibilities..."
+                  isValid={
+                    state.responsibilities.touched &&
+                    !state.responsibilities.isValid
+                  }
+                  message="responsibilities is required"
                 />
                 <TextArea
                   label="Requirements"
@@ -158,6 +226,10 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="List qualifications..."
+                  isValid={
+                    state.requirements.touched && !state.requirements.isValid
+                  }
+                  message="requirements is required"
                 />
               </div>
             )}
@@ -172,31 +244,17 @@ const PostJob = () => {
                   onChange={handleChange}
                   onBlur={handleTouch}
                   placeholder="e.g. hr@technova.com"
+                  isValid={
+                    state.contactEmail.touched && !state.contactEmail.isValid
+                  }
+                  message="Contact email is required"
                 />
               </div>
             )}
 
-            {step === 5 && (
-              <div>
-                <h3 className="text-xl font-semibold mb-4 text-center">
-                  Review Your Job Post
-                </h3>
-                <div className="space-y-2 text-gray-700">
-                  {Object.entries(formData).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className="flex justify-between border-b pb-1 text-sm">
-                      <span className="capitalize font-medium">
-                        {key.replace(/([A-Z])/g, " $1")}
-                      </span>
-                      <span className="text-right text-gray-600">
-                        {value || "—"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* {step === 5 && (
+              
+            )} */}
 
             {/* Navigation Buttons */}
             <div className="flex justify-center gap-4 pt-8">
@@ -209,18 +267,12 @@ const PostJob = () => {
                 </button>
               )}
 
-              {step < totalSteps ? (
+              {step < totalSteps && (
                 <button
                   type="button"
                   onClick={nextStep}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                   Next
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-                  Submit
                 </button>
               )}
             </div>

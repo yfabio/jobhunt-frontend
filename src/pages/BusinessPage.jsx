@@ -51,7 +51,7 @@ const BusinessPage = () => {
       {image && (
         <Modal
           close={() => setImage(null)}
-          title={"User Image"}>
+          title={"Business Logo"}>
           <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-4">
