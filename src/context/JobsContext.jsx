@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 
 const JobsContext = createContext();
 
@@ -68,5 +68,5 @@ export function JobsProvider({ children }) {
 }
 
 export function useJobsCtx() {
-  return useContext(JobsContext);
+  return use(JobsContext);
 }
