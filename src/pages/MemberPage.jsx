@@ -70,7 +70,7 @@ const MemberPage = () => {
                 <span className="text-4xl font-bold ">{"FY"}</span>
                 <button
                   onClick={handleImagePicker}
-                  className="flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer absolute -bottom-1 right-1">
+                  className="hidden md:flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer absolute -bottom-1 right-1">
                   <FaPen size={10} />
                 </button>
                 <input

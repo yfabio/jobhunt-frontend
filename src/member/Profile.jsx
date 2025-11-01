@@ -319,7 +319,7 @@ const Profile = () => {
             />
           )}
         </form>
-        <div className="flex flex-col gap-4 mt-6">
+        <div className="hidden md:flex flex-col gap-4 mt-6">
           <h2 className="font-semibold text-2xl text-slate-600">CV</h2>
           <div className="flex items-center justify-between py-4 px-4 gap-2 cursor-pointer rounded border border-dotted">
             <div
