@@ -2,19 +2,15 @@ import { useRef, useState } from "react";
 import { NavLink } from "react-router";
 import { FaUser, FaUserTie } from "react-icons/fa6";
 
-import SidePanel from "./SidePanel";
+import SideMenu from "./SideMenu";
 import { useAuthCtx } from "../context/AuthContext";
 
 const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const sidePanelRef = useRef();
 
   const { user, logout } = useAuthCtx();
 
-  const toggleDrawerHandler = () => {
-    setIsDrawerOpen((prev) => !prev);
-    sidePanelRef.current.classList.toggle("-translate-x-full", isDrawerOpen);
-  };
+  const toggleDrawerHandler = () => setIsDrawerOpen((prev) => !prev);
 
   const handleLogout = () => {
     logout();
@@ -124,8 +120,11 @@ const Header = () => {
             </svg>
           </span>
         </button>
-        <SidePanel sidePanelRef={sidePanelRef} />
       </div>
+      <SideMenu
+        isDrawerOpen={isDrawerOpen}
+        toggleDrawerHandler={toggleDrawerHandler}
+      />
     </header>
   );
 };
