@@ -10,7 +10,7 @@ const AppLayout = () => {
       <AuthProvider>
         <JobsProvider>
           <Header />
-          <main>
+          <main className="container mx-auto p-4">
             <Outlet />
           </main>
           <Footer />
