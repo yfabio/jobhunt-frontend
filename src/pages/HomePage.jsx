@@ -6,9 +6,10 @@ import JobItem from "../member/JobItem";
 import Pagination from "../components/Pagination";
 
 import { useJobsCtx } from "../context/JobsContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
+  const [accordion, setAccordion] = useState({ open: false, id: null });
   const { jobs } = useJobsCtx();
 
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const HomePage = () => {
 
   return (
     <>
-      <section className="container mx-auto">
+      <section className="container mx-auto p-4">
         {/* Filter */}
         <FilterJobs />
         <div className="flex flex-col gap-5 mt-4 md:flex-row">
@@ -31,6 +32,8 @@ const HomePage = () => {
               <JobItem
                 key={job.id}
                 job={job}
+                accordion={accordion}
+                setAccordion={setAccordion}
               />
             ))}
             <Pagination />
