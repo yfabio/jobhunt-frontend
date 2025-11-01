@@ -1,6 +1,28 @@
 import { FaMagnifyingGlass, FaLocationDot } from "react-icons/fa6";
 
+import FilterInput from "../model/FilterInput";
+import useValidate from "../hooks/useValidate";
+
 const FilterJobs = () => {
+  const [state, dispatch, formData] = useValidate(FilterInput);
+
+  const handleChange = (e) => {
+    dispatch({ type: "CHANGE", name: e.target.name, value: e.target.value });
+  };
+
+  const handleTouch = (e) => {
+    dispatch({ type: "TOUCH", name: e.target.name, touched: true });
+  };
+
+  const clear = (e) => {
+    dispatch({ type: "CLEAR" });
+  };
+
+  const handleSearch = () => {
+    console.log(formData);
+    clear();
+  };
+
   return (
     <div className="container mx-auto text-center">
       <div className="flex flex-col items-center justify-center max-w-4xl mx-auto rounded-xl border md:flex-row">
@@ -14,6 +36,9 @@ const FilterJobs = () => {
             className="w-full py-2.5 focus:ring-0 focus:outline-none"
             type="text"
             name="search"
+            value={state.search.value}
+            onChange={handleChange}
+            onBlur={handleTouch}
             placeholder="Job title, keywords, or company"
           />
         </div>
@@ -27,15 +52,26 @@ const FilterJobs = () => {
           <input
             className="w-full py-2.5 focus:ring-0 focus:outline-none"
             type="text"
-            name="search"
+            name="location"
+            value={state.location.value}
+            onChange={handleChange}
+            onBlur={handleTouch}
             placeholder="City, province, or remote"
           />
         </div>
-        <button className="hidden md:block mx-5 py-2 px-4 bg-indigo-600 text-white font-bold rounded-lg transition duration-500 hover:bg-indigo-900 cursor-pointer">
+        <button
+          onClick={handleSearch}
+          disabled={!state.isFormValid}
+          className="hidden md:block mx-5 py-2 px-4 bg-indigo-600 text-white font-bold rounded-lg transition duration-500  cursor-pointer 
+          disabled:opacity-35 disabled:cursor-not-allowed disabled:bg-gray-400 hover:bg-indigo-700">
           Find jobs
         </button>
       </div>
-      <button className="block md:hidden w-full mt-4 py-2 px-4 bg-indigo-600 text-white font-bold rounded-lg transition duration-500 hover:bg-indigo-900 cursor-pointer">
+      <button
+        onClick={handleSearch}
+        disabled={!state.isFormValid}
+        className="block md:hidden w-full mt-4 py-2 px-4 bg-indigo-600 text-white font-bold rounded-lg transition duration-500  cursor-pointer 
+        disabled:opacity-35 disabled:cursor-not-allowed disabled:bg-gray-400 hover:bg-indigo-700">
         Find jobs
       </button>
     </div>
