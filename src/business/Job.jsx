@@ -61,7 +61,7 @@ const Job = ({ job }) => {
           {job.jobType}
         </span>
 
-        <p className="text-gray-500 text-sm mt-2">{job.companyName}</p>
+        <p className="text-gray-500 text-sm mt-2">{job.company}</p>
 
         <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
           <span>{job.location}</span>

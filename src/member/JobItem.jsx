@@ -59,7 +59,7 @@ const JobItem = ({ job, accordion, setAccordion }) => {
             Apply
           </button>
         )}
-        <p className="font-medium text-gray-500">{job.companyName}</p>
+        <p className="font-medium text-gray-500">{job.company}</p>
         <p className="font-medium text-gray-500">{job.location}</p>
         <button
           onClick={() =>
