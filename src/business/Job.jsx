@@ -36,7 +36,7 @@ const Job = ({ job }) => {
           </form>
         </Modal>
       )}
-      <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 space-y-2.5 hover:shadow-lg transition-shadow duration-300">
+      <div className="p-4 w-full hover:rounded hover:bg-gray-100">
         <h2 className="text-xl font-semibold text-gray-800">{job.title}</h2>
 
         <span className="text-sm font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-lg">
