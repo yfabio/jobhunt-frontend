@@ -70,7 +70,11 @@ const router = createBrowserRouter([
             ),
           },
           { path: "profile", element: <BusinessProfile /> },
-          { path: "postjob", element: <BusinessPostJob /> },
+          {
+            path: "postjob",
+            element: <BusinessPostJob />,
+            children: [{ path: ":id", element: <BusinessPostJob /> }],
+          },
           { path: "jobs", element: <BusinessJobs /> },
           { path: "accountsettings", element: <BussinesAccountSettings /> },
         ],

@@ -7,7 +7,7 @@ import useValidate from "../hooks/useValidate";
 import Modal from "../components/Modal";
 
 import { useJobsCtx } from "../context/JobsContext";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import ButtonsAction from "../components/ButtonsAction";
 
 const PostJob = () => {
@@ -15,9 +15,19 @@ const PostJob = () => {
   const [state, dispatch, formData] = useValidate(PostJobInput);
   const [show, setShow] = useState(false);
 
-  const { addNewJob } = useJobsCtx();
+  const { addNewJob, getJobById } = useJobsCtx();
 
   const navigate = useNavigate();
+
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.id) {
+      const job = getJobById(params.id);
+      console.log(job);
+      dispatch({ type: "UPDATE", job });
+    }
+  }, [params.id]);
 
   const totalSteps = 5;
 

@@ -47,6 +47,16 @@ const formReducer = (state, action) => {
         ...state,
         isFormValid: false,
       };
+    case "UPDATE":
+      for (const key in state) {
+        if (key !== "isFormValid") {
+          state[key].value = action.job[key];
+        }
+      }
+      return {
+        ...state,
+        isFormValid: false,
+      };
     default:
       return state;
   }
