@@ -1,15 +1,14 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 import SiginInput from "../model/SiginInput";
-import { useAuthCtx } from "../context/AuthContext";
 import useValidate from "../hooks/useValidate";
+import Spinner from "../components/Spinner";
+import { useAuthCtx } from "../context/AuthContext";
 
 const SigninPage = () => {
   const [state, dispatch, formData] = useValidate(SiginInput);
 
-  const { login } = useAuthCtx();
-
-  const navigate = useNavigate();
+  const { loading, login } = useAuthCtx();
 
   const handleChange = (e) => {
     dispatch({ type: "CHANGE", name: e.target.name, value: e.target.value });
@@ -21,13 +20,12 @@ const SigninPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const role = formData.email.includes("member") ? "member" : "business";
-    login(role);
-    navigate("/", { replace: true });
+    login(formData);
   };
 
   return (
-    <section className="container mx-auto">
+    <section className="container mx-auto ">
+      {loading && <Spinner />}
       <div className="max-w-md mx-auto">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col text-lg">
@@ -82,7 +80,7 @@ const SigninPage = () => {
           </div>
           <div className="mt-2">
             <button
-              disabled={!state.isFormValid}
+              disabled={!state.isFormValid || loading}
               className="py-2 px-6 rounded-lg bg-indigo-600 text-white font-bold border disabled:opacity-35 disabled:cursor-not-allowed disabled:bg-gray-400
             hover:bg-indigo-700">
               Login

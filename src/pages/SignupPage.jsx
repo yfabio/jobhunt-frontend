@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 import SignupInput from "../model/SignupInput";
 
@@ -9,9 +9,7 @@ import useValidate from "../hooks/useValidate";
 const SignupPage = () => {
   const [state, dispatch, formData] = useValidate(SignupInput);
 
-  const { login } = useAuthCtx();
-
-  const navigate = useNavigate();
+  const { register } = useAuthCtx();
 
   const handleChange = (e) => {
     dispatch({ type: "CHANGE", name: e.target.name, value: e.target.value });
@@ -23,10 +21,7 @@ const SignupPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(formData);
-    navigate("/", { replace: true });
-    login();
+    register(formData);
   };
 
   return (

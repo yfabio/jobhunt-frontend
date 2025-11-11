@@ -11,7 +11,7 @@ export default {
     value: "",
     isValid: false,
     touched: false,
-    validators: [VALIDATOR_MINLENGTH(6)],
+    validators: [VALIDATOR_MINLENGTH(4)],
   },
   role: {
     value: "member",

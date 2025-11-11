@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate } from "react-router";
 import { useAuthCtx } from "../context/AuthContext";
 
 const ProtectedRoute = ({ element }) => {
