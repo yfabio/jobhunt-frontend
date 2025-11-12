@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaPen, FaUpload } from "react-icons/fa";
 
 import useValidate from "../hooks/useValidate";
@@ -9,24 +9,102 @@ import MessageError from "../components/MessageError";
 import Modal from "../components/Modal";
 import Dropdown from "../components/Dropdown";
 
+import { toast } from "react-toastify";
+
+import { useAuthCtx } from "../context/AuthContext";
+
 const Profile = () => {
+  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [pdf, setPdf] = useState(null);
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
+  const [memberProfile, setMemberProfile] = useState({
+    id: null,
+    empStatus: "Unemployed",
+    firstName: "",
+    lastName: "",
+    jobTitle: "",
+    location: "",
+    employer: "",
+    primaryIndustry: "",
+  });
 
   const [option, setOption] = useState(null);
   const [show, setShow] = useState(false);
+
+  const { user } = useAuthCtx();
 
   const filePickerRef = useRef();
 
   const MAX_FILE_SIZE_MB = 2;
 
-  const submitHandler = (e) => {
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const res = await fetch(`/api/api/v1/members/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        const { data } = await res.json();
+        setMemberProfile(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    loadUserProfile();
+  }, []);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     if (state.isFormValid) {
-      console.log(formData);
+      try {
+        setLoading(true);
+        if (memberProfile.id) {
+          const res = await fetch(
+            `/api/api/v1/members/profile/${memberProfile.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+
+          if (res.ok) {
+            const { data } = await res.json();
+            setMemberProfile(data);
+            setLoading(false);
+            toast.success("Profile updated successfully!");
+          }
+        } else {
+          const res = await fetch(`/api/api/v1/members/profile`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (res.ok) {
+            const { data } = await res.json();
+            setMemberProfile(data);
+            setLoading(false);
+            toast.success("Profile created successfully!");
+          }
+        }
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
     }
     setEdit(false);
   };
@@ -88,6 +166,7 @@ const Profile = () => {
               onCancel={() => setShow(false)}
               btnLeft="No"
               btnRight="Yes"
+              disabled={loading}
             />
           </form>
         </Modal>
@@ -132,11 +211,11 @@ const Profile = () => {
                 onChange={handleChange}
                 onBlur={handleTouch}
                 className="block w-full py-2">
-                <option value="employed">Employed</option>
-                <option value="not_employed">Not Employed</option>
+                <option value="Employed">Employed</option>
+                <option value="Unemployed">Unemployed</option>
               </select>
             )}
-            {!edit && <p className="text-lg">Employed</p>}
+            {!edit && <p className="text-lg">{memberProfile.empStatus}</p>}
           </div>
           <div>
             <label
@@ -161,7 +240,7 @@ const Profile = () => {
               }`}
               />
             )}
-            {!edit && <p className="text-lg">Fabio</p>}
+            {!edit && <p className="text-lg">{memberProfile.firstName}</p>}
             {edit && state.firstName.touched && !state.firstName.isValid && (
               <span className="text-red-500 text-sm">
                 First name is required
@@ -191,7 +270,7 @@ const Profile = () => {
                 }`}
               />
             )}
-            {!edit && <p className="text-lg">Yamshita</p>}
+            {!edit && <p className="text-lg">{memberProfile.lastName}</p>}
             {edit && state.lastName.touched && !state.lastName.isValid && (
               <span className="text-red-500 text-sm">
                 Last name is required
@@ -221,7 +300,7 @@ const Profile = () => {
                 }`}
               />
             )}
-            {!edit && <p className="text-lg">Software Developer</p>}
+            {!edit && <p className="text-lg">{memberProfile.jobTitle}</p>}
             {edit && state.jobTitle.touched && !state.jobTitle.isValid && (
               <span className="text-red-500 text-sm">
                 Job title is required
@@ -251,7 +330,7 @@ const Profile = () => {
                   }`}
               />
             )}
-            {!edit && <p className="text-lg">Sao Paulo, SP Brazil</p>}
+            {!edit && <p className="text-lg">{memberProfile.location}</p>}
             {edit && state.location.touched && !state.location.isValid && (
               <span className="text-red-500 text-sm">Location is required</span>
             )}
@@ -272,20 +351,15 @@ const Profile = () => {
                 onChange={handleChange}
                 onBlur={handleTouch}
                 placeholder="Employer"
-                className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200 
-                  ${
-                    state.employer.touched && !state.employer.isValid
-                      ? "border-red-500 bg-red-100 placeholder:text-red-600"
-                      : ""
-                  }`}
+                className={`block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200`}
               />
             )}
-            {!edit && <p className="text-lg">Tata Consultancy Services</p>}
-            {edit && state.employer.touched && !state.employer.isValid && (
+            {!edit && <p className="text-lg">{memberProfile.employer}</p>}
+            {/* {edit && state.employer.touched && !state.employer.isValid && (
               <span className="text-red-500 text-sm">
                 Employer name is required
               </span>
-            )}
+            )} */}
           </div>
 
           <div>
@@ -301,6 +375,7 @@ const Profile = () => {
                 value={state.primaryIndustry.value}
                 onChange={handleChange}
                 className="block w-full py-2">
+                <option value="none">None</option>
                 <option value="tech">Tech</option>
                 <option value="consulting">Consulting</option>
                 <option value="accounting">Accounting</option>
@@ -309,7 +384,9 @@ const Profile = () => {
                 <option value="humanResources">Human Resources</option>
               </select>
             )}
-            {!edit && <p className="text-lg">Consulting</p>}
+            {!edit && (
+              <p className="text-lg">{memberProfile.primaryIndustry}</p>
+            )}
           </div>
 
           {edit && (

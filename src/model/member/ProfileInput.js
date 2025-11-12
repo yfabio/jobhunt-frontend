@@ -2,7 +2,7 @@ import { VALIDATOR_REQUIRE } from "../../util/validators";
 
 export default {
   empStatus: {
-    value: "employed",
+    value: "",
     isValid: true,
     validators: [VALIDATOR_REQUIRE()],
   },
@@ -32,14 +32,14 @@ export default {
   },
   employer: {
     value: "",
-    isValid: false,
+    isValid: true,
     touched: false,
-    validators: [VALIDATOR_REQUIRE()],
+    validators: [],
   },
   primaryIndustry: {
-    value: "tech",
+    value: "none",
     isValid: true,
-    validators: [VALIDATOR_REQUIRE()],
+    validators: [],
   },
   isFormValid: false,
 };
