@@ -21,7 +21,7 @@ const Profile = () => {
   const [state, dispatch, formData] = useValidate(ProfileInputs);
   const [memberProfile, setMemberProfile] = useState({
     id: null,
-    empStatus: "Unemployed",
+    empStatus: "",
     firstName: "",
     lastName: "",
     jobTitle: "",
@@ -49,8 +49,14 @@ const Profile = () => {
             Authorization: `Bearer ${user.token}`,
           },
         });
-        const { data } = await res.json();
-        setMemberProfile(data);
+
+        if (res.ok) {
+          const { data } = await res.json();
+          setMemberProfile(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
       } catch (error) {
         toast.error(error.message);
       }
@@ -64,27 +70,18 @@ const Profile = () => {
     if (state.isFormValid) {
       try {
         setLoading(true);
-        if (memberProfile.id) {
-          const res = await fetch(
-            `/api/api/v1/members/profile/${memberProfile.id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
-              },
-              body: JSON.stringify(formData),
-            }
-          );
-
-          if (res.ok) {
-            const { data } = await res.json();
-            setMemberProfile(data);
-            setLoading(false);
-            toast.success("Profile updated successfully!");
-          }
+        let res;
+        if (memberProfile.id && edit) {
+          res = await fetch(`/api/api/v1/members/profile/${memberProfile.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+            body: JSON.stringify(formData),
+          });
         } else {
-          const res = await fetch(`/api/api/v1/members/profile`, {
+          res = await fetch(`/api/api/v1/members/profile`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -92,13 +89,19 @@ const Profile = () => {
             },
             body: JSON.stringify(formData),
           });
+        }
 
-          if (res.ok) {
-            const { data } = await res.json();
-            setMemberProfile(data);
-            setLoading(false);
+        if (res.ok) {
+          const { data } = await res.json();
+          setMemberProfile(data);
+          if (memberProfile.id && edit) {
+            toast.success("Profile updated successfully!");
+          } else {
             toast.success("Profile created successfully!");
           }
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
         }
       } catch (error) {
         toast.error(error.message);
@@ -375,13 +378,15 @@ const Profile = () => {
                 value={state.primaryIndustry.value}
                 onChange={handleChange}
                 className="block w-full py-2">
-                <option value="none">None</option>
-                <option value="tech">Tech</option>
-                <option value="consulting">Consulting</option>
-                <option value="accounting">Accounting</option>
-                <option value="finance">Finance</option>
-                <option value="advertising">Advertising</option>
-                <option value="humanResources">Human Resources</option>
+                <option value="None">None</option>
+                <option value="Tech">Tech</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Accounting">Accounting</option>
+                <option value="Finance">Finance</option>
+                <option value="Advertising">Advertising</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Logistics">Logistics</option>
+                <option value="Banking">Banking</option>
               </select>
             )}
             {!edit && (
