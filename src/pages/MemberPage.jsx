@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 import { useAuthCtx } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";
@@ -14,8 +15,44 @@ const MemberPage = () => {
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
   const imagePickerRef = useRef();
+  const [member, setMember] = useState({
+    id: null,
+    empStatus: "",
+    firstName: "",
+    lastName: "",
+    jobTitle: "",
+    location: "",
+    employer: "",
+    primaryIndustry: "",
+  });
 
   const MAX_FILE_SIZE_MB = 1;
+
+  const { user } = useAuthCtx();
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const res = await fetch(`/api/api/v1/members/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          setMember(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    loadUserProfile();
+  }, []);
 
   const handleImage = (e) => {
     if (e.target.files && e.target.files.length === 1) {
@@ -83,9 +120,13 @@ const MemberPage = () => {
                   onChange={handleImage}
                 />
               </div>
-              <h2 className="font-semibold text-2xl">Fabio Yamashita</h2>
+              <h2 className="font-semibold text-2xl">
+                {member.firstName}
+                {` `}
+                {member.lastName}
+              </h2>
               <p className="font-light text-gray-500">
-                Software Developer at Tata Consultancy Services Limited
+                {`${member.jobTitle} at ${member.employer}`}
               </p>
             </div>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
