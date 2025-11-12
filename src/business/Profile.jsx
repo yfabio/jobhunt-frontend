@@ -1,21 +1,98 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
 
 import useValidate from "../hooks/useValidate";
 import ProfileInputs from "../model/business/ProfileInput";
 import ButtonsAction from "../components/ButtonsAction";
 
+import { useAuthCtx } from "../context/AuthContext";
+import { toast } from "react-toastify";
+
 const Profile = () => {
+  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
+  const [businesProfile, setBusinessProfile] = useState({
+    id: null,
+    name: "",
+    industry: "",
+    location: "",
+  });
 
-  const submitHandler = (e) => {
+  const { user } = useAuthCtx();
+
+  useEffect(() => {
+    const loadBusinessProfile = async () => {
+      try {
+        const res = await fetch("/api/api/v1/businesses/profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          setBusinessProfile(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    loadBusinessProfile();
+  }, []);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     if (state.isFormValid) {
-      console.log(formData);
+      try {
+        setLoading(true);
+        let res;
+        if (businesProfile.id && edit) {
+          res = await fetch(
+            `/api/api/v1/businesses/profile/${businesProfile.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+        } else {
+          res = await fetch("/api/api/v1/businesses/profile", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+            body: JSON.stringify(formData),
+          });
+        }
+        if (res.ok) {
+          const { data } = await res.json();
+          setBusinessProfile(data);
+          if (businesProfile.id && edit) {
+            toast.success("Profile updated successfully");
+          } else {
+            toast.success("Profile created successfully");
+          }
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(true);
+        setEdit(false);
+      }
     }
-    setEdit(false);
   };
 
   const handleChange = (e) => {
@@ -75,11 +152,9 @@ const Profile = () => {
               }`}
               />
             )}
-            {!edit && <p className="text-lg">CGI</p>}
+            {!edit && <p className="text-lg">{businesProfile.name}</p>}
             {edit && state.name.touched && !state.name.isValid && (
-              <span className="text-red-500 text-sm">
-                First name is required
-              </span>
+              <span className="text-red-500 text-sm">Name is required</span>
             )}
           </div>
 
@@ -106,7 +181,7 @@ const Profile = () => {
                   }`}
               />
             )}
-            {!edit && <p className="text-lg">Halifax, Canada</p>}
+            {!edit && <p className="text-lg">{businesProfile.location}</p>}
             {edit && state.location.touched && !state.location.isValid && (
               <span className="text-red-500 text-sm">Location is required</span>
             )}
@@ -125,15 +200,18 @@ const Profile = () => {
                 value={state.industry.value}
                 onChange={handleChange}
                 className="block w-full py-2">
-                <option value="tech">Tech</option>
-                <option value="consulting">Consulting</option>
-                <option value="accounting">Accounting</option>
-                <option value="finance">Finance</option>
-                <option value="advertising">Advertising</option>
-                <option value="human_resources">Human Resources</option>
+                <option value="None">None</option>
+                <option value="Tech">Tech</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Accounting">Accounting</option>
+                <option value="Finance">Finance</option>
+                <option value="Advertising">Advertising</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Logistics">Logistics</option>
+                <option value="Banking">Banking</option>
               </select>
             )}
-            {!edit && <p className="text-lg">Consulting</p>}
+            {!edit && <p className="text-lg">{businesProfile.industry}</p>}
           </div>
 
           {edit && (

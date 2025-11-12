@@ -107,9 +107,9 @@ const Profile = () => {
         toast.error(error.message);
       } finally {
         setLoading(false);
+        setEdit(false);
       }
     }
-    setEdit(false);
   };
 
   const handleChange = (e) => {
