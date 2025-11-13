@@ -7,6 +7,7 @@ import ButtonsAction from "../components/ButtonsAction";
 
 import { useAuthCtx } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 const Profile = () => {
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,8 @@ const Profile = () => {
     industry: "",
     location: "",
   });
+
+  const navigate = useNavigate();
 
   const { user } = useAuthCtx();
 
@@ -82,6 +85,7 @@ const Profile = () => {
           } else {
             toast.success("Profile created successfully");
           }
+          navigate("/business");
         } else {
           const { message } = await res.json();
           toast.error(message);
@@ -216,7 +220,7 @@ const Profile = () => {
 
           {edit && (
             <ButtonsAction
-              disabled={!state.isFormValid}
+              disabled={!state.isFormValid && !loading}
               onCancel={handleCancel}
             />
           )}

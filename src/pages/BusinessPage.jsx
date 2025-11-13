@@ -4,6 +4,8 @@ import { NavLink, Outlet, useNavigate } from "react-router";
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 import { useAuthCtx } from "../context/AuthContext";
 
+import { toast } from "react-toastify";
+
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";
 import ButtonsAction from "../components/ButtonsAction";
@@ -13,8 +15,40 @@ import imageTypes from "../util/imageTypes";
 const BusinessPage = () => {
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
+  const [business, setBusiness] = useState({
+    id: null,
+    name: "",
+    location: "",
+    industry: "",
+  });
 
   const imagePickerRef = useRef();
+
+  const { user } = useAuthCtx();
+
+  useEffect(() => {
+    const loadBusinessProfile = async () => {
+      try {
+        const res = await fetch("/api/api/v1/businesses/profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          setBusiness(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    loadBusinessProfile();
+  }, []);
 
   const MAX_FILE_SIZE_MB = 1;
 
@@ -84,8 +118,8 @@ const BusinessPage = () => {
                   onChange={handleImage}
                 />
               </div>
-              <h2 className="font-semibold text-2xl">CGI</h2>
-              <p className="font-light text-gray-500">Consulting</p>
+              <h2 className="font-semibold text-2xl">{business.name}</h2>
+              <p className="font-light text-gray-500">{business.industry}</p>
             </div>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
             <ul className="flex flex-col gap-6">
