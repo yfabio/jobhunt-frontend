@@ -7,7 +7,10 @@ import useValidate from "../hooks/useValidate";
 import Modal from "../components/Modal";
 
 import { useJobsCtx } from "../context/JobsContext";
+import { useAuthCtx } from "../context/AuthContext";
 import { useNavigate, useParams } from "react-router";
+import { toast } from "react-toastify";
+
 import ButtonsAction from "../components/ButtonsAction";
 
 const PostJob = () => {
@@ -15,6 +18,7 @@ const PostJob = () => {
   const [state, dispatch, formData] = useValidate(PostJobInput);
   const [show, setShow] = useState(false);
 
+  const { user } = useAuthCtx();
   const { addNewJob, getJobById } = useJobsCtx();
 
   const navigate = useNavigate();
@@ -24,7 +28,6 @@ const PostJob = () => {
   useEffect(() => {
     if (params.id) {
       const job = getJobById(params.id);
-      console.log(job);
       dispatch({ type: "UPDATE", job });
     }
   }, [params.id]);
@@ -63,11 +66,29 @@ const PostJob = () => {
     }
   }, [step]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addNewJob(formData);
-    navigate("../jobs");
-    clear();
+    try {
+      const res = await fetch("/api/api/v1/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        const { data } = await res.json();
+        addNewJob(data);
+        navigate("../jobs");
+        clear();
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
