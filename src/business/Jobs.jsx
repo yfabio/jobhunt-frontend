@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import { useJobsCtx } from "../context/JobsContext";
 
 import Job from "./Job";
 
 const Jobs = () => {
-  
   const { jobs } = useJobsCtx();
 
   return (
@@ -14,7 +12,7 @@ const Jobs = () => {
       <div className="flex flex-col gap-2">
         {jobs.map((job) => (
           <Job
-            key={job.id}
+            key={job._id}
             job={job}
           />
         ))}

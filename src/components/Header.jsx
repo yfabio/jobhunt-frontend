@@ -4,16 +4,19 @@ import { FaUser, FaUserTie } from "react-icons/fa6";
 
 import SideMenu from "./SideMenu";
 import { useAuthCtx } from "../context/AuthContext";
+import { useJobsCtx } from "../context/JobsContext";
 
 const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { user, logout } = useAuthCtx();
+  const { reset } = useJobsCtx();
 
   const toggleDrawerHandler = () => setIsDrawerOpen((prev) => !prev);
 
   const handleLogout = () => {
     logout();
+    reset();
   };
 
   return (
@@ -63,6 +66,7 @@ const Header = () => {
             {user.isLogin && (
               <li className="group font-semibold text-sky-600 hover:underline">
                 <button
+                  type="button"
                   onClick={handleLogout}
                   className="group-hover:underline cursor-pointer">
                   Logout

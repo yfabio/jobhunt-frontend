@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Activity } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 import { useAuthCtx } from "../context/AuthContext";
+import { useJobsCtx } from "../context/JobsContext";
 
 import { toast } from "react-toastify";
 
@@ -25,6 +26,7 @@ const BusinessPage = () => {
   const imagePickerRef = useRef();
 
   const { user } = useAuthCtx();
+  const { jobs, reset } = useJobsCtx();
 
   useEffect(() => {
     const loadBusinessProfile = async () => {
@@ -78,6 +80,11 @@ const BusinessPage = () => {
     console.log(image);
     setImage(null);
     setTooBigFileError(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    reset();
   };
 
   return (
@@ -143,16 +150,20 @@ const BusinessPage = () => {
                   {"Post Job"}
                 </NavLink>
               </li>
-              <li>
-                <NavLink
-                  to="jobs"
-                  className={({ isActive }) =>
-                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+
+              {jobs.length > 0 && (
+                <li>
+                  <NavLink
+                    to="jobs"
+                    className={({ isActive }) =>
+                      `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
                 ${isActive ? "border-l-slate-600" : ""} `
-                  }>
-                  {"Jobs"}
-                </NavLink>
-              </li>
+                    }>
+                    {"Jobs"}
+                  </NavLink>
+                </li>
+              )}
+
               <li>
                 <NavLink
                   to="accountsettings"
@@ -166,7 +177,7 @@ const BusinessPage = () => {
             </ul>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="group flex items-center justify-between w-full cursor-pointer">
               <span className="font-semibold text-slate-600 underline-offset-2 group-hover:underline ">
                 Sign Out

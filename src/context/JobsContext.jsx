@@ -2,7 +2,6 @@ import { createContext, use, useEffect, useState } from "react";
 
 import { useAuthCtx } from "./AuthContext";
 
-import values from "../data/jobs";
 import { toast } from "react-toastify";
 
 const JobsContext = createContext();
@@ -14,20 +13,34 @@ export function JobsProvider({ children }) {
 
   const nextCurrentPage = (page, limit) => {};
 
-  const addNewJob = (value) => {};
+  const { user } = useAuthCtx();
+
+  const addNewJob = (value) => {
+    setJobs((jobs) => [...jobs, value]);
+  };
 
   const getJobById = (id) => {
-    return values.find((job) => job.id === id);
+    return jobs.find((job) => job._id === id);
   };
 
   const deleteJob = (id) => {
     setData((prev) => prev.filter((job) => job.id !== id));
   };
 
-  useEffect(() => {
-    const loadJobs = async () => {
+  const reset = () => {
+    setJobs([]);
+  };
+
+  const loadJobs = async () => {
+    if (user.token) {
       try {
-        const res = await fetch("/api/api/v1/businesses/jobs");
+        const res = await fetch("/api/api/v1/businesses/jobs", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
         if (res.ok) {
           const { data } = await res.json();
           setJobs(data);
@@ -36,11 +49,10 @@ export function JobsProvider({ children }) {
           toast.error(message);
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
-    };
-    loadJobs();
-  }, []);
+    }
+  };
 
   return (
     <JobsContext.Provider
@@ -51,6 +63,8 @@ export function JobsProvider({ children }) {
         nextCurrentPage,
         deleteJob,
         addNewJob,
+        reset,
+        loadJobs,
       }}>
       {children}
     </JobsContext.Provider>

@@ -39,7 +39,7 @@ const Job = ({ job }) => {
           title={`${edit ? "Edit Job" : "Remove Job"}`}
           close={() => setShow(false)}>
           <form
-            onSubmit={(e) => handleSubmit(e, job.id)}
+            onSubmit={(e) => handleSubmit(e, job._id)}
             className="flex flex-col gap-2">
             <p className="text-center font-medium text-red-500">
               {`Are you sure, you want to ${

@@ -32,6 +32,13 @@ const PostJob = () => {
     }
   }, [params.id]);
 
+  // clears the input when the user navigate away
+  useEffect(() => {
+    return () => {
+      clear();
+    };
+  }, []);
+
   const totalSteps = 5;
 
   const handleChange = (e) => {

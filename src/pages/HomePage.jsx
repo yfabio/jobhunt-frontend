@@ -18,11 +18,11 @@ const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // useEffect(() => {
-  //   if (jobs.length > 0 && location.pathname === "/") {
-  //     navigate(`${jobs[0]._id}`, { replace: true });
-  //   }
-  // }, [jobs, location.pathname, navigate]);
+  useEffect(() => {
+    if (jobs.length > 0 && location.pathname === "/") {
+      navigate(`${jobs[0]._id}`, { replace: true });
+    }
+  }, [jobs, location.pathname, navigate]);
 
   useEffect(() => {
     const loadJobs = async () => {

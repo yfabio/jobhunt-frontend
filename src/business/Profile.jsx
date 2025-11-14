@@ -6,6 +6,7 @@ import ProfileInputs from "../model/business/ProfileInput";
 import ButtonsAction from "../components/ButtonsAction";
 
 import { useAuthCtx } from "../context/AuthContext";
+import { useJobsCtx } from "../context/JobsContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
@@ -23,6 +24,11 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const { user } = useAuthCtx();
+  const { loadJobs } = useJobsCtx();
+
+  if (user.token) {
+    loadJobs();
+  }
 
   useEffect(() => {
     const loadBusinessProfile = async () => {
