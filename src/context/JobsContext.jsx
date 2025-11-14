@@ -1,47 +1,23 @@
 import { createContext, use, useEffect, useState } from "react";
 
-const JobsContext = createContext();
+import { useAuthCtx } from "./AuthContext";
 
 import values from "../data/jobs";
+import { toast } from "react-toastify";
+
+const JobsContext = createContext();
 
 const JOBS_PER_PAGE = 5;
 
 export function JobsProvider({ children }) {
-  const [data, setData] = useState(values);
+  const [jobs, setJobs] = useState([]);
 
-  const getJobs = (page, limit) => {
-    const batchJobs = [];
-    let index = (page - 1) * limit;
-    let count = 0;
-    while (true) {
-      if (count === limit || index === data.length - 1) {
-        break;
-      }
-      batchJobs.push(data[index++]);
-      count++;
-    }
-    return batchJobs;
-  };
+  const nextCurrentPage = (page, limit) => {};
 
-  const [jobs, setJobs] = useState(getJobs(1, JOBS_PER_PAGE));
-
-  const nextCurrentPage = (page, limit) => {
-    setJobs(getJobs(page, limit));
-  };
-
-  const getId = () => data.sort((a, b) => a.id - b.id)[data.length - 1].id + 1;
-
-  const addNewJob = (value) => {
-    const job = { ...value, id: getId() };
-    setData((prev) => {
-      const loads = [...prev];
-      loads.unshift(job);
-      return loads;
-    });
-  };
+  const addNewJob = (value) => {};
 
   const getJobById = (id) => {
-    return data.find((job) => job.id == id);
+    return values.find((job) => job.id === id);
   };
 
   const deleteJob = (id) => {
@@ -49,14 +25,28 @@ export function JobsProvider({ children }) {
   };
 
   useEffect(() => {
-    setJobs(getJobs(1, JOBS_PER_PAGE));
-  }, [data]);
+    const loadJobs = async () => {
+      try {
+        const res = await fetch("/api/api/v1/businesses/jobs");
+        if (res.ok) {
+          const { data } = await res.json();
+          setJobs(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadJobs();
+  }, []);
 
   return (
     <JobsContext.Provider
       value={{
         jobs,
-        totalJobs: data.length,
+        totalJobs: jobs.length,
         getJobById,
         nextCurrentPage,
         deleteJob,

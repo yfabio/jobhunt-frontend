@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router";
 import { FaBriefcase, FaLocationDot } from "react-icons/fa6";
 
@@ -7,21 +7,40 @@ import { useAuthCtx } from "../context/AuthContext";
 
 import Modal from "../components/Modal";
 import ButtonsAction from "../components/ButtonsAction";
+import { toast } from "react-toastify";
 
 const JobInfo = () => {
+  const [job, setJob] = useState({});
   const [modal, setModal] = useState({ open: false, job: {} });
   const { user } = useAuthCtx();
-  const { getJobById } = useJobsCtx();
 
   const params = useParams();
-
-  const job = getJobById(Number(params.id));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("user who applied ", user.role);
     setModal({ open: false, job: {} });
   };
+
+  useEffect(() => {
+    const loadJob = async () => {
+      try {
+        const res = await fetch(`/api/api/v1/jobs/${params.id}`);
+        if (res.ok) {
+          const { data } = await res.json();
+          setJob(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadJob();
+  }, [params.id]);
 
   return (
     <>

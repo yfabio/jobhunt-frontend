@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import { useJobsCtx } from "../context/JobsContext";
 
 import Job from "./Job";
 
 const Jobs = () => {
+  
   const { jobs } = useJobsCtx();
 
   return (

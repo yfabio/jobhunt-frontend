@@ -44,7 +44,7 @@ const JobItem = ({ job, accordion, setAccordion }) => {
         </Modal>
       )}
       <Link
-        to={`${job.id}`}
+        to={`${job._id}`}
         className="max-w-xl w-full rounded-xl p-4 border cursor-pointer hover:shadow-xl">
         <h2 className="text-2xl font-extrabold">{job.title}</h2>
 
