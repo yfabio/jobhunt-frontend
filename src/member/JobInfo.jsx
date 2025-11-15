@@ -16,10 +16,27 @@ const JobInfo = () => {
 
   const params = useParams();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("user who applied ", user.role);
-    setModal({ open: false, job: {} });
+
+    try {
+      const res = await fetch(`/api/api/v1/members/apply/${job._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (res.ok) {
+        toast.success("Job applied successfully!");
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+      setModal({ open: false, job: {} });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {

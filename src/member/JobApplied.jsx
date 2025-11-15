@@ -3,14 +3,37 @@ import { FaTrashCan } from "react-icons/fa6";
 
 import Modal from "../components/Modal";
 import ButtonsAction from "../components/ButtonsAction";
+import { toast } from "react-toastify";
+import { useAuthCtx } from "../context/AuthContext";
 
-const JobApplied = ({ job }) => {
+const JobApplied = ({ job, update }) => {
   const [show, setShow] = useState(false);
 
-  const handleSubmit = (e, id) => {
+  const { user } = useAuthCtx();
+
+  const handleSubmit = async (e, id) => {
     e.preventDefault();
-    console.log("id that will be removed", id);
-    setShow(false);
+    setShow(true);
+    try {
+      const res = await fetch(`/api/api/v1/members/remove/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (res.ok) {
+        update();
+        toast.success("Job removed successfully!");
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setShow(false);
+    }
   };
 
   return (
@@ -20,7 +43,7 @@ const JobApplied = ({ job }) => {
           title={"Remove applied Job"}
           close={() => setShow(false)}>
           <form
-            onSubmit={(e) => handleSubmit(e, job.id)}
+            onSubmit={(e) => handleSubmit(e, job._id)}
             className="flex flex-col gap-2">
             <p className="text-center font-medium text-red-500">
               Are you sure, you want to remove this Job?

@@ -12,6 +12,7 @@ import MessageError from "../components/MessageError";
 import imageTypes from "../util/imageTypes";
 
 const MemberPage = () => {
+  const [jobCount, setJobCount] = useState(0);
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
   const imagePickerRef = useRef();
@@ -52,6 +53,30 @@ const MemberPage = () => {
       }
     };
     loadUserProfile();
+  }, []);
+
+  useEffect(() => {
+    const getJobCount = async () => {
+      try {
+        const res = await fetch(`/api/api/v1/members/jobscount`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          setJobCount(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    getJobCount();
   }, []);
 
   const handleImage = (e) => {
@@ -125,9 +150,11 @@ const MemberPage = () => {
                 {` `}
                 {member.lastName}
               </h2>
-              <p className="font-light text-gray-500">
-                {`${member.jobTitle} at ${member.employer}`}
-              </p>
+              {member.empStatus === "employed" && (
+                <p className="font-light text-gray-500">
+                  {`${member.jobTitle} at ${member.employer}`}
+                </p>
+              )}
             </div>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
             <ul className="flex flex-col gap-6">
@@ -141,16 +168,18 @@ const MemberPage = () => {
                   {"Profile"}
                 </NavLink>
               </li>
-              <li>
-                <NavLink
-                  to={"jobs"}
-                  className={({ isActive }) =>
-                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+              {jobCount > 0 && (
+                <li>
+                  <NavLink
+                    to={"jobs"}
+                    className={({ isActive }) =>
+                      `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
                 ${isActive ? "border-l-slate-600" : ""} `
-                  }>
-                  {"Jobs"}
-                </NavLink>
-              </li>
+                    }>
+                    {"Jobs"}
+                  </NavLink>
+                </li>
+              )}
               <li>
                 <NavLink
                   to={"accountsettings"}
