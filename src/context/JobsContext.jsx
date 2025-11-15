@@ -23,8 +23,28 @@ export function JobsProvider({ children }) {
     return jobs.find((job) => job._id === id);
   };
 
-  const deleteJob = (id) => {
-    setData((prev) => prev.filter((job) => job.id !== id));
+  const deleteJob = async (id) => {
+    if (user.token) {
+      try {
+        const res = await fetch(`/api/api/v1/businesses/jobs/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        if (res.ok) {
+          setJobs((jobs) => jobs.filter((job) => job._id !== id));
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+          console.log(message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
   };
 
   const reset = () => {

@@ -19,7 +19,7 @@ const PostJob = () => {
   const [show, setShow] = useState(false);
 
   const { user } = useAuthCtx();
-  const { addNewJob, getJobById } = useJobsCtx();
+  const { addNewJob, getJobById, loadJobs } = useJobsCtx();
 
   const navigate = useNavigate();
 
@@ -76,19 +76,36 @@ const PostJob = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/api/v1/jobs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      let res;
+
+      if (params.id) {
+        res = await fetch(`/api/api/v1/jobs/${params.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        res = await fetch("/api/api/v1/jobs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+      }
+
       if (res.ok) {
-        const { data } = await res.json();
-        addNewJob(data);
+        if (params.id) {
+          loadJobs();
+        } else {
+          const { data } = await res.json();
+          addNewJob(data);
+        }
         navigate("../jobs");
-        clear();
       } else {
         const { message } = await res.json();
         toast.error(message);

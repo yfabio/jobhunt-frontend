@@ -10,9 +10,9 @@ const Jobs = () => {
     <section className="w-full rounded p-6 border-[1px] border-gray-200">
       <h1 className="text-2xl font-bold my-20">Jobs</h1>
       <div className="flex flex-col gap-2">
-        {jobs.map((job) => (
+        {jobs.map((job, idx) => (
           <Job
-            key={job._id}
+            key={idx}
             job={job}
           />
         ))}
