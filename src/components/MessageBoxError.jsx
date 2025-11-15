@@ -2,14 +2,16 @@ import { FaXmark } from "react-icons/fa6";
 import { FaBan } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
-const MessageBoxError = ({ message }) => {
+const MessageBoxError = ({ message, timeout = true }) => {
   const [show, setShow] = useState(message);
 
   useEffect(() => {
-    const time = setTimeout(() => setShow(null), 3000);
-    return () => {
-      clearTimeout(time);
-    };
+    if (timeout) {
+      const time = setTimeout(() => setShow(null), 3000);
+      return () => {
+        clearTimeout(time);
+      };
+    }
   }, [message]);
 
   return (
@@ -24,12 +26,14 @@ const MessageBoxError = ({ message }) => {
               />
               <p className="text-lg">{message}</p>
             </div>
-            <button
-              onClick={() => setShow(null)}
-              type="button"
-              className="rounded cursor-pointer focus:outline-2 focus:outline-sky-500 p-1">
-              <FaXmark />
-            </button>
+            {timeout && (
+              <button
+                onClick={() => setShow(null)}
+                type="button"
+                className="rounded cursor-pointer focus:outline-2 focus:outline-sky-500 p-1">
+                <FaXmark />
+              </button>
+            )}
           </div>
         </div>
       )}

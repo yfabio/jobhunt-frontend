@@ -10,7 +10,7 @@ const Modal = ({ children, title, close }) => {
 
       <div className="max-h-[calc(100%-4rem)] mt-20 relative bg-white rounded overflow-y-auto scrollbar-hidden my-20 shadow-lg p-6 z-10">
         <h1 className="text-lg font-semibold">{title}</h1>
-        <div className="flex justify-end border-b pb-3">
+        <div className="flex justify-end border-b pb-3 mb-2">
           <button
             onClick={close}
             className="rounded p-1 hover:bg-gray-300">

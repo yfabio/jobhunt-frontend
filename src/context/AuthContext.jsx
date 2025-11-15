@@ -101,6 +101,10 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const updateEmail = (email) => {
+    setUser((prev) => ({ ...prev, email }));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -109,6 +113,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         register,
+        updateEmail,
       }}>
       {children}
     </AuthContext.Provider>

@@ -7,9 +7,12 @@ import EmailInput from "../model/member/EmailInput";
 import PassInput from "../model/member/PassInput";
 import MessageBoxError from "../components/MessageBoxError";
 import MessageError from "../components/MessageError";
+import Modal from "../components/Modal";
 import { useAuthCtx } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const AccountSettings = () => {
+  const [match, setMatch] = useState(false);
   const [editEmail, setEditEmail] = useState(false);
   const [editPass, setEditPass] = useState(false);
   const [errorEmailMessages, setErrorEmailMessages] = useState([]);
@@ -18,7 +21,7 @@ const AccountSettings = () => {
 
   const [passState, passDispatch, formDataPass] = useValidate(PassInput);
 
-  const { user } = useAuthCtx();
+  const { user, updateEmail } = useAuthCtx();
 
   const handleEmailChange = (e) => {
     emailDispatch({
@@ -36,6 +39,9 @@ const AccountSettings = () => {
       setErrorEmailMessages([]);
     }
   };
+
+  const clearEmailInput = () => emailDispatch({ type: "CLEAR" });
+  const clearPasswordsInput = () => passDispatch({ type: "CLEAR" });
 
   useEffect(() => {
     if (emailState && emailState.email.touched && !emailState.email.isValid) {
@@ -62,11 +68,32 @@ const AccountSettings = () => {
     setErrorEmailMessages([null]);
   };
 
-  const handleSubmitEmail = (e) => {
+  const handleSubmitEmail = async (e) => {
     e.preventDefault();
-    console.log(formDataEmail);
-    setEditEmail(false);
-    setErrorEmailMessages([]);
+    try {
+      const res = await fetch(`/api/api/v1/auth/email`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(formDataEmail),
+      });
+      if (res.ok) {
+        const { data } = await res.json();
+        updateEmail(data);
+        clearEmailInput();
+        toast.success("Email updated successfully!");
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setEditEmail(false);
+      setErrorEmailMessages([]);
+    }
   };
 
   // Password handlers
@@ -83,160 +110,196 @@ const AccountSettings = () => {
     passDispatch({ type: "TOUCH", name: e.target.name, touched: true });
   };
 
-  const handleSubmitPassword = (e) => {
+  const handleSubmitPassword = async (e) => {
     e.preventDefault();
-    console.log(formDataPass);
-    setEditPass(false);
+    if (formDataPass.newPassword !== formDataPass.reenterPassword) {
+      setMatch(true);
+      return;
+    }
+    try {
+      const res = await fetch(`/api/api/v1/auth/pwd`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(formDataPass),
+      });
+      if (res.ok) {
+        clearPasswordsInput();
+        toast.success("Password updated successfully!");
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setEditPass(false);
+    }
   };
 
   return (
-    <section className="w-full rounded p-6 border-[1px] border-gray-200">
-      <h1 className="text-2xl font-bold my-20">Account Settings</h1>
-      <div className="flex flex-col">
-        <h2 className="font-semibold text-2xl text-slate-600 mb-4">
-          Email and Password
-        </h2>
-        {errorEmailMessages.map((message) => (
-          <MessageBoxError
-            key={message}
-            message={message}
-          />
-        ))}
-        <div className="flex flex-col">
-          <div className="flex items-center justify-between gap-4">
-            <small
-              htmlFor="email"
-              className="text-sm">
-              Email
-            </small>
-            {!editEmail && (
-              <button
-                onClick={() => setEditEmail(true)}
-                className="p-2 rounded hover:bg-gray-300">
-                <FaPen size={16} />
-              </button>
-            )}
+    <>
+      {match && (
+        <Modal close={() => setMatch(false)}>
+          <div className="flex flex-col items-center justify-center gap-2">
+            <MessageBoxError
+              timeout={false}
+              message={"Passwords do not match"}
+            />
           </div>
-          <p className="text-lg text-gray-500">{`${user.role}@pop.com`}</p>
-          {editEmail && (
-            <form onSubmit={handleSubmitEmail}>
-              <div className="space-y-4">
-                <div className="flex flex-col space-y-1">
-                  <label
-                    htmlFor="email"
-                    className="font-light text-sm">
-                    New Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="Email"
-                    value={emailState.email.value}
+        </Modal>
+      )}
+      <section className="w-full rounded p-6 border-[1px] border-gray-200">
+        <h1 className="text-2xl font-bold my-20">Account Settings</h1>
+        <div className="flex flex-col">
+          <h2 className="font-semibold text-2xl text-slate-600 mb-4">
+            Email and Password
+          </h2>
+          {errorEmailMessages.map((message) => (
+            <MessageBoxError
+              key={message}
+              message={message}
+            />
+          ))}
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between gap-4">
+              <small
+                htmlFor="email"
+                className="text-sm">
+                Email
+              </small>
+              {!editEmail && (
+                <button
+                  onClick={() => setEditEmail(true)}
+                  className="p-2 rounded hover:bg-gray-300">
+                  <FaPen size={16} />
+                </button>
+              )}
+            </div>
+            <p className="text-lg text-gray-500">{user.email}</p>
+            {editEmail && (
+              <form onSubmit={handleSubmitEmail}>
+                <div className="space-y-4">
+                  <div className="flex flex-col space-y-1">
+                    <label
+                      htmlFor="email"
+                      className="font-light text-sm">
+                      New Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="Email"
+                      value={emailState.email.value}
+                      onChange={handleEmailChange}
+                      onBlur={handleEmailTouch}
+                      className={`block py-2 border rounded w-full pl-4`}
+                    />
+                  </div>
+
+                  <PasswordInput
+                    id={"password"}
+                    title={"Password"}
+                    placeholder="Current Password"
+                    value={emailState.password.value}
                     onChange={handleEmailChange}
                     onBlur={handleEmailTouch}
-                    className={`block py-2 border rounded w-full pl-4`}
+                  />
+
+                  <ButtonsAction
+                    disabled={!emailState.isFormValid}
+                    onCancel={handleEmailCancel}
                   />
                 </div>
-
-                <PasswordInput
-                  id={"password"}
-                  title={"Password"}
-                  placeholder="Current Password"
-                  value={emailState.password.value}
-                  onChange={handleEmailChange}
-                  onBlur={handleEmailTouch}
-                />
-
-                <ButtonsAction
-                  disabled={!emailState.isFormValid}
-                  onCancel={handleEmailCancel}
-                />
-              </div>
-            </form>
-          )}
-        </div>
-        {/* PASSWORD CHANGE */}
-        <div className="flex flex-col mt-4">
-          <div className="flex items-center justify-between gap-4">
-            <small className="text-sm">Current Password</small>
-            {!editPass && (
-              <button
-                onClick={() => setEditPass(true)}
-                className="p-2 rounded hover:bg-gray-300">
-                <FaPen size={16} />
-              </button>
+              </form>
             )}
           </div>
-          {!editPass && <p className="text-lg">*************</p>}
-          {editPass && (
-            <form onSubmit={handleSubmitPassword}>
-              <div className="space-y-4">
-                <PasswordInput
-                  id={"currentPass"}
-                  title={"Re-enter your current password"}
-                  value={passState.currentPass.value}
-                  onChange={handlePassChange}
-                  onBlur={handlePassTouch}
-                  isValid={
-                    passState.currentPass.touched &&
-                    !passState.currentPass.isValid
-                  }
-                />
-                {passState.currentPass.touched &&
-                  !passState.currentPass.isValid && (
-                    <MessageError>
-                      Current password must be at least 4 characters, no spaces
-                    </MessageError>
-                  )}
+          {/* PASSWORD CHANGE */}
+          <div className="flex flex-col mt-4">
+            <div className="flex items-center justify-between gap-4">
+              <small className="text-sm">Current Password</small>
+              {!editPass && (
+                <button
+                  onClick={() => setEditPass(true)}
+                  className="p-2 rounded hover:bg-gray-300">
+                  <FaPen size={16} />
+                </button>
+              )}
+            </div>
+            {!editPass && <p className="text-lg">*************</p>}
+            {editPass && (
+              <form onSubmit={handleSubmitPassword}>
+                <div className="space-y-4">
+                  <PasswordInput
+                    id={"currentPass"}
+                    title={"Re-enter your current password"}
+                    value={passState.currentPass.value}
+                    onChange={handlePassChange}
+                    onBlur={handlePassTouch}
+                    isValid={
+                      passState.currentPass.touched &&
+                      !passState.currentPass.isValid
+                    }
+                  />
+                  {passState.currentPass.touched &&
+                    !passState.currentPass.isValid && (
+                      <MessageError>
+                        Current password must be at least 4 characters, no
+                        spaces
+                      </MessageError>
+                    )}
 
-                <PasswordInput
-                  id={"newPassword"}
-                  title={"New password"}
-                  value={passState.newPassword.value}
-                  onChange={handlePassChange}
-                  onBlur={handlePassTouch}
-                  isValid={
-                    passState.newPassword.touched &&
-                    !passState.newPassword.isValid
-                  }
-                />
-                {passState.newPassword.touched &&
-                  !passState.newPassword.isValid && (
-                    <MessageError>
-                      New password must be at least 4 characters, no spaces
-                    </MessageError>
-                  )}
+                  <PasswordInput
+                    id={"newPassword"}
+                    title={"New password"}
+                    value={passState.newPassword.value}
+                    onChange={handlePassChange}
+                    onBlur={handlePassTouch}
+                    isValid={
+                      passState.newPassword.touched &&
+                      !passState.newPassword.isValid
+                    }
+                  />
+                  {passState.newPassword.touched &&
+                    !passState.newPassword.isValid && (
+                      <MessageError>
+                        New password must be at least 4 characters, no spaces
+                      </MessageError>
+                    )}
 
-                <PasswordInput
-                  id={"reenterPassword"}
-                  title={"Re-enter new password"}
-                  value={passState.reenterPassword.value}
-                  onChange={handlePassChange}
-                  onBlur={handlePassTouch}
-                  isValid={
-                    passState.reenterPassword.touched &&
-                    !passState.reenterPassword.isValid
-                  }
-                />
-                {passState.reenterPassword.touched &&
-                  !passState.reenterPassword.isValid && (
-                    <MessageError>
-                      Re-enter new password must be at least 4 characters, no
-                      spaces
-                    </MessageError>
-                  )}
+                  <PasswordInput
+                    id={"reenterPassword"}
+                    title={"Re-enter new password"}
+                    value={passState.reenterPassword.value}
+                    onChange={handlePassChange}
+                    onBlur={handlePassTouch}
+                    isValid={
+                      passState.reenterPassword.touched &&
+                      !passState.reenterPassword.isValid
+                    }
+                  />
+                  {passState.reenterPassword.touched &&
+                    !passState.reenterPassword.isValid && (
+                      <MessageError>
+                        Re-enter new password must be at least 4 characters, no
+                        spaces
+                      </MessageError>
+                    )}
 
-                <ButtonsAction
-                  disabled={!passState.isFormValid}
-                  onCancel={() => setEditPass(false)}
-                />
-              </div>
-            </form>
-          )}
+                  <ButtonsAction
+                    disabled={!passState.isFormValid}
+                    onCancel={() => setEditPass(false)}
+                  />
+                </div>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
