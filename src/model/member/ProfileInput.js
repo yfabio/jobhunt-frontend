@@ -3,7 +3,7 @@ import { VALIDATOR_REQUIRE } from "../../util/validators";
 export default {
   empStatus: {
     value: "",
-    isValid: true,
+    isValid: false,
     validators: [VALIDATOR_REQUIRE()],
   },
   firstName: {
