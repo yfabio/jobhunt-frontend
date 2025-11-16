@@ -18,9 +18,12 @@ const SigninPage = () => {
     dispatch({ type: "TOUCH", name: e.target.name, touched: true });
   };
 
+  const clear = () => dispatch({ type: "CLEAR" });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     login(formData);
+    //clear();
   };
 
   return (

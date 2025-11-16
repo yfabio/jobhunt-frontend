@@ -19,9 +19,12 @@ const SignupPage = () => {
     dispatch({ type: "TOUCH", name: e.target.name, touched: true });
   };
 
+  const clear = () => dispatch({ type: "CLEAR" });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     register(formData);
+    clear();
   };
 
   return (
