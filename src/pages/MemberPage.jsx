@@ -15,7 +15,6 @@ const MemberPage = () => {
   const [jobCount, setJobCount] = useState(0);
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [image, setImage] = useState();
-  const imagePickerRef = useRef();
   const [member, setMember] = useState({
     id: null,
     empStatus: "",
@@ -26,6 +25,8 @@ const MemberPage = () => {
     employer: "",
     primaryIndustry: "",
   });
+
+  const imagePickerRef = useRef();
 
   const MAX_FILE_SIZE_MB = 1;
 
@@ -84,7 +85,7 @@ const MemberPage = () => {
       const file = e.target.files[0];
 
       if (file && imageTypes.includes(file.type)) {
-        const fileSizeMB = file.size / 1024 / 1024;
+        const fileSizeMB = file.size / 1024;
         if (fileSizeMB > MAX_FILE_SIZE_MB) {
           setTooBigFileError(true);
         } else {
