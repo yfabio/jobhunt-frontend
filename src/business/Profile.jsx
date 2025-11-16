@@ -26,9 +26,11 @@ const Profile = () => {
   const { user } = useAuthCtx();
   const { loadJobs } = useJobsCtx();
 
-  if (user.token) {
-    loadJobs();
-  }
+  useEffect(() => {
+    if (user.token) {
+      loadJobs();
+    }
+  }, [user.token]);
 
   useEffect(() => {
     const loadBusinessProfile = async () => {
