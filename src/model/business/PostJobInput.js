@@ -32,7 +32,7 @@ export default {
     validators: [VALIDATOR_REQUIRE()],
   },
   jobType: {
-    value: "full-time",
+    value: "None",
     isValid: false,
     touched: false,
     validators: [VALIDATOR_REQUIRE()],

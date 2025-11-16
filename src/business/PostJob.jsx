@@ -83,7 +83,6 @@ const PostJob = () => {
     e.preventDefault();
     try {
       let res;
-
       if (params.id) {
         res = await fetch(`/api/api/v1/jobs/${params.id}`, {
           method: "PUT",
@@ -145,18 +144,20 @@ const PostJob = () => {
                 Review Your Job Post
               </h3>
               <div className="space-y-2 text-gray-700">
-                {Object.entries(formData).map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="flex justify-between border-b pb-1 text-sm">
-                    <span className="capitalize font-medium">
-                      {key.replace(/([A-Z])/g, " $1")}
-                    </span>
-                    <span className="text-right text-gray-600">
-                      {value || "—"}
-                    </span>
-                  </div>
-                ))}
+                {Object.entries(formData)
+                  .filter(([key, _]) => key !== "isFormValid")
+                  .map(([key, value]) => (
+                    <div
+                      key={key}
+                      className="flex justify-between border-b pb-1 text-sm">
+                      <span className="capitalize font-medium">
+                        {key.replace(/([A-Z])/g, " $1")}
+                      </span>
+                      <span className="text-right text-gray-600">
+                        {value || "—"}
+                      </span>
+                    </div>
+                  ))}
               </div>
             </div>
             <ButtonsAction
@@ -250,10 +251,11 @@ const PostJob = () => {
                   <select
                     id="jobType"
                     name="jobType"
-                    value={state.jobType.value || "full-time"}
+                    value={state.jobType.value}
                     onChange={handleChange}
                     onBlur={handleTouch}
                     className="block w-full pl-4 py-2 border outline-none  rounded transition-colors duration-200">
+                    <option value="None">None</option>
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
                     <option value="Contract">Contract</option>
