@@ -3,10 +3,10 @@ import { useReducer } from "react";
 import { validate } from "../util/validators";
 
 const formReducer = (state, action) => {
+  let isFormValid = true;
   let input;
   switch (action.type) {
     case "CHANGE":
-      let isFormValid = true;
       input = state[action.name];
       input.value = action.value;
       input.isValid = validate(action.value, input.validators);
@@ -51,11 +51,18 @@ const formReducer = (state, action) => {
       for (const key in state) {
         if (key !== "isFormValid") {
           state[key].value = action.job[key];
+          state[key].isValid = validate(
+            state[key].value.toString(),
+            state[key].validators
+          );
+          if (state[key].value && state[key].isValid) {
+            isFormValid = isFormValid && state[key].isValid;
+          }
         }
       }
       return {
         ...state,
-        isFormValid: false,
+        isFormValid,
       };
     default:
       return state;
