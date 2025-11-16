@@ -5,6 +5,7 @@ import PostJobInput from "../model/business/PostJobInput";
 import TextArea from "../components/TextArea";
 import useValidate from "../hooks/useValidate";
 import Modal from "../components/Modal";
+import MessageBoxError from "../components/MessageBoxError";
 
 import { useJobsCtx } from "../context/JobsContext";
 import { useAuthCtx } from "../context/AuthContext";
@@ -16,6 +17,7 @@ import ButtonsAction from "../components/ButtonsAction";
 const PostJob = () => {
   const [step, setStep] = useState(1);
   const [state, dispatch, formData] = useValidate(PostJobInput);
+  const [isFormValid, setIsFormValid] = useState(false);
   const [show, setShow] = useState(false);
 
   const { user } = useAuthCtx();
@@ -67,9 +69,13 @@ const PostJob = () => {
 
   useEffect(() => {
     if (step === 5) {
-      setShow(true);
-    } else {
-      setShow(false);
+      if (!formData.isFormValid) {
+        setIsFormValid(true);
+        setShow(false);
+      } else {
+        setIsFormValid(false);
+        setShow(true);
+      }
     }
   }, [step]);
 
@@ -117,6 +123,16 @@ const PostJob = () => {
 
   return (
     <>
+      {isFormValid && (
+        <Modal
+          title={"Errors Fields"}
+          close={() => setIsFormValid(false)}>
+          <MessageBoxError
+            timeout={false}
+            message="Please fill in all required fields."
+          />
+        </Modal>
+      )}
       {show && (
         <Modal
           title={"Summary job"}

@@ -40,7 +40,7 @@ const formReducer = (state, action) => {
           state[key].value = "";
           state[key].isValid = false;
           state[key].touched = false;
-          state[key].validators = [];
+          state[key].validators = state[key].validators;
         }
       }
       return {
@@ -70,6 +70,8 @@ const useValidate = (inputs) => {
   for (const key in state) {
     if (state[key].value) {
       formData[key] = state[key].value;
+    } else {
+      formData[key] = state[key];
     }
   }
 

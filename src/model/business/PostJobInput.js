@@ -61,4 +61,5 @@ export default {
     touched: false,
     validators: [VALIDATOR_REQUIRE(), VALIDATOR_EMAIL()],
   },
+  isFormValid: false,
 };
