@@ -24,35 +24,45 @@ const MemberPage = () => {
     location: "",
     employer: "",
     primaryIndustry: "",
+    picturePath: "",
   });
 
   const imagePickerRef = useRef();
 
-  const MAX_FILE_SIZE_MB = 1;
-
   const { user } = useAuthCtx();
 
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      try {
-        const res = await fetch(`/api/api/v1/members/profile`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (res.ok) {
-          const { data } = await res.json();
-          setMember(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
+  let styleImage;
+
+  if (member.picturePath.length !== "noimage") {
+    styleImage = {
+      backgroundImage: `url("http://localhost:8000/${member.picturePath}")`,
     };
+  } else {
+    styleImage = {};
+  }
+
+  const loadUserProfile = async () => {
+    try {
+      const res = await fetch(`/api/api/v1/members/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (res.ok) {
+        const { data } = await res.json();
+        setMember(data);
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
     loadUserProfile();
   }, []);
 
@@ -85,8 +95,8 @@ const MemberPage = () => {
       const file = e.target.files[0];
 
       if (file && imageTypes.includes(file.type)) {
-        const fileSizeMB = file.size / 1024;
-        if (fileSizeMB > MAX_FILE_SIZE_MB) {
+        const fileSize1MB = 1 * 1024 * 2024;
+        if (file.size > fileSize1MB) {
           setTooBigFileError(true);
         } else {
           setImage(file);
@@ -101,11 +111,31 @@ const MemberPage = () => {
 
   const { logout } = useAuthCtx();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(image);
-    setImage(null);
-    setTooBigFileError(false);
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      const res = await fetch("/api/api/v1/members/picture", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: formData,
+      });
+      if (res.ok) {
+        toast.success("Profile updated successfully!");
+        loadUserProfile();
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setImage(null);
+      setTooBigFileError(false);
+    }
   };
 
   return (
@@ -129,12 +159,21 @@ const MemberPage = () => {
         <aside className="md:h-screen w-80 p-2">
           <div>
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-white">
-                <span className="text-4xl font-bold ">{"FY"}</span>
+              <div
+                className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-cover bg-center"
+                style={styleImage}>
+                {member.picturePath === "noimage" && (
+                  <span className="text-4xl font-bold ">{`${member.firstName.charAt(
+                    0
+                  )}${member.lastName.charAt(0)}`}</span>
+                )}
                 <button
                   onClick={handleImagePicker}
-                  className="hidden md:flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer absolute -bottom-1 right-1">
-                  <FaPen size={10} />
+                  className="hidden md:flex items-center justify-center w-6 h-6 border-2 border-sky-600 rounded-full cursor-pointer absolute -bottom-1 right-1">
+                  <FaPen
+                    size={10}
+                    className="text-sky-600"
+                  />
                 </button>
                 <input
                   type="file"
