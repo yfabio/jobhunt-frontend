@@ -28,6 +28,8 @@ const Profile = () => {
     location: "",
     employer: "",
     primaryIndustry: "",
+    resumePath: "",
+    resumeName: "",
   });
 
   const [option, setOption] = useState(null);
@@ -39,28 +41,29 @@ const Profile = () => {
 
   const MAX_FILE_SIZE_MB = 2;
 
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      try {
-        const res = await fetch(`/api/api/v1/members/profile`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
+  const loadUserProfile = async () => {
+    try {
+      const res = await fetch(`/api/api/v1/members/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
-        if (res.ok) {
-          const { data } = await res.json();
-          setMemberProfile(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-        }
-      } catch (error) {
-        toast.error(error.message);
+      if (res.ok) {
+        const { data } = await res.json();
+        setMemberProfile(data);
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
       }
-    };
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
     loadUserProfile();
   }, []);
 
@@ -148,9 +151,27 @@ const Profile = () => {
     setShow(true);
   };
 
-  const handleResumeDeletion = (e) => {
+  const handleResumeDeletion = async (e) => {
     e.preventDefault();
-    setShow(false);
+    try {
+      const res = await fetch(`/api/api/v1/members/resume`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (res.ok) {
+        toast.success("Profile updated successfully!");
+        loadUserProfile();
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setShow(false);
+    }
   };
 
   return (
@@ -178,6 +199,7 @@ const Profile = () => {
         <PdfViewer
           file={pdf}
           reset={() => setPdf(null)}
+          update={loadUserProfile}
         />
       )}
       <section className="w-full rounded p-6 border-[1px] border-gray-200">
@@ -409,7 +431,14 @@ const Profile = () => {
               className="flex gap-2">
               <FaUpload size={22} />
               <div>
-                <h3 className="text-xl">Upload CV</h3>
+                {memberProfile.resumeName !== "Unknown" && (
+                  <h3 className="text-xl">
+                    {memberProfile.resumeName?.split("-")[1]}
+                  </h3>
+                )}
+                {memberProfile.resumeName === "Unknown" && (
+                  <h3 className="text-xl">Upload CV</h3>
+                )}
                 <p className="text-sm">Use a pdf file only</p>
               </div>
               <input

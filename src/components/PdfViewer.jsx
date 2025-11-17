@@ -8,12 +8,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import ButtonsAction from "./ButtonsAction";
+import { toast } from "react-toastify";
+import { useAuthCtx } from "../context/AuthContext";
 
-const PdfViewer = ({ file, reset }) => {
+const PdfViewer = ({ file, reset, update }) => {
   const [pdfData, setPdfData] = useState(null);
   const [display, setDisplay] = useState(false);
 
   const handleSucces = () => {};
+
+  const { user } = useAuthCtx();
 
   const handleError = (e) => {
     console.log(e);
@@ -33,8 +37,32 @@ const PdfViewer = ({ file, reset }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("file data");
-    handleClose();
+    const postResume = async () => {
+      try {
+        const formData = new FormData();
+        formData.append("cv", file);
+        const res = await fetch(`/api/api/v1/members/resume`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: formData,
+        });
+        if (res.ok) {
+          toast.success("Profile updated successfully!");
+          update();
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        handleClose();
+      }
+    };
+
+    postResume();
   };
 
   const handleClose = () => {
