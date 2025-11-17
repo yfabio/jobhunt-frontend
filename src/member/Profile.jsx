@@ -20,7 +20,7 @@ const Profile = () => {
   const [tooBigFileError, setTooBigFileError] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
   const [memberProfile, setMemberProfile] = useState({
-    id: null,
+    _id: null,
     empStatus: "",
     firstName: "",
     lastName: "",
@@ -74,15 +74,18 @@ const Profile = () => {
       try {
         setLoading(true);
         let res;
-        if (memberProfile.id && edit) {
-          res = await fetch(`/api/api/v1/members/profile/${memberProfile.id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-            body: JSON.stringify(formData),
-          });
+        if (memberProfile._id && edit) {
+          res = await fetch(
+            `/api/api/v1/members/profile/${memberProfile._id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+              },
+              body: JSON.stringify(formData),
+            }
+          );
         } else {
           res = await fetch(`/api/api/v1/members/profile`, {
             method: "POST",
@@ -97,7 +100,7 @@ const Profile = () => {
         if (res.ok) {
           const { data } = await res.json();
           setMemberProfile(data);
-          if (memberProfile.id && edit) {
+          if (memberProfile._id && edit) {
             toast.success("Profile updated successfully!");
           } else {
             toast.success("Profile created successfully!");
@@ -236,6 +239,7 @@ const Profile = () => {
                 onChange={handleChange}
                 onBlur={handleTouch}
                 className="block w-full py-2">
+                <option value="None">None</option>
                 <option value="Employed">Employed</option>
                 <option value="Unemployed">Unemployed</option>
               </select>
