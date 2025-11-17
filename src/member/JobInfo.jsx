@@ -16,6 +16,16 @@ const JobInfo = () => {
 
   const params = useParams();
 
+  let imageStyle;
+
+  if (job.business?.logoPath) {
+    imageStyle = {
+      backgroundImage: `url("http://localhost:8000/${job.business.logoPath}")`,
+    };
+  } else {
+    imageStyle = {};
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -97,6 +107,9 @@ const JobInfo = () => {
                 Apply
               </button>
             )}
+            <span
+              className="w-20 h-20 rounded-full bg-contain bg-no-repeat bg-center"
+              style={imageStyle}></span>
             <span className="text-gray-500">{job.company}</span>
             <p className="text-gray-500">{job.address}</p>
             <p className="font-semibold">{job.jobType}</p>

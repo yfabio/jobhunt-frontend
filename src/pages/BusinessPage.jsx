@@ -21,6 +21,7 @@ const BusinessPage = () => {
     name: "",
     location: "",
     industry: "",
+    logoPath: "",
   });
 
   const imagePickerRef = useRef();
@@ -28,29 +29,40 @@ const BusinessPage = () => {
   const { user } = useAuthCtx();
   const { jobs, reset } = useJobsCtx();
 
-  useEffect(() => {
-    const loadBusinessProfile = async () => {
-      try {
-        const res = await fetch("/api/api/v1/businesses/profile", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (res.ok) {
-          const { data } = await res.json();
-          setBusiness(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
+  let styleImage;
+
+  if (business.logoPath !== "noimage") {
+    styleImage = {
+      backgroundImage: `url("http://localhost:8000/${business.logoPath}")`,
     };
+  } else {
+    styleImage = {};
+  }
+
+  const loadBusinessProfile = async () => {
+    try {
+      const res = await fetch("/api/api/v1/businesses/profile", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (res.ok) {
+        const { data } = await res.json();
+        setBusiness({ ...data, logoPath: `${data.logoPath}?=t${Date.now()}` });
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
     loadBusinessProfile();
-  }, []);
+  }, [user.token]);
 
   const MAX_FILE_SIZE_MB = 1;
 
@@ -75,11 +87,31 @@ const BusinessPage = () => {
 
   const { logout } = useAuthCtx();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(image);
-    setImage(null);
-    setTooBigFileError(false);
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      const res = await fetch("/api/api/v1/businesses/logo", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: formData,
+      });
+      if (res.ok) {
+        toast.success("Profile updated successfully!");
+        loadBusinessProfile();
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setImage(null);
+      setTooBigFileError(false);
+    }
   };
 
   const handleLogout = () => {
@@ -108,19 +140,28 @@ const BusinessPage = () => {
         <aside className="md:h-screen w-80 p-2">
           <div>
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-white">
-                <span className="text-4xl font-bold ">{"FY"}</span>
+              <div
+                className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-center bg-contain bg-no-repeat"
+                style={styleImage}>
+                {business.logoPath.includes("noimage") && (
+                  <span className="text-4xl font-bold ">{`${business.name
+                    .toUpperCase()
+                    .charAt(0)}${business.name.toUpperCase().charAt(1)}`}</span>
+                )}
                 <button
                   onClick={handleImagePicker}
-                  className="hidden md:flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer absolute -bottom-1 right-1">
-                  <FaPen size={10} />
+                  className="hidden md:flex items-center justify-center w-6 h-6 border-2 border-sky-600 rounded-full cursor-pointer absolute -bottom-1 right-1">
+                  <FaPen
+                    size={10}
+                    className="text-sky-600"
+                  />
                 </button>
                 <input
                   type="file"
                   name="image"
                   id="image"
                   className="hidden"
-                  accept=".png,.jpg,.jpeg"
+                  accept="image/png"
                   ref={imagePickerRef}
                   onChange={handleImage}
                 />

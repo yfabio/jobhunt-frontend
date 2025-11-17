@@ -33,7 +33,7 @@ const MemberPage = () => {
 
   let styleImage;
 
-  if (member.picturePath.length !== "noimage") {
+  if (member.picturePath !== "noimage") {
     styleImage = {
       backgroundImage: `url("http://localhost:8000/${member.picturePath}")`,
     };

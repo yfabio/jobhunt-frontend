@@ -6,7 +6,6 @@ import JobItem from "../member/JobItem";
 import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 
-import { useJobsCtx } from "../context/JobsContext";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
