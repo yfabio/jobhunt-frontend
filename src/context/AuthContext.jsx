@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       return JSON.parse(data);
     } else {
       return {
-        token: "",
+        token: null,
         name: "",
         email: "",
         role: "",
@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
       const res = await fetch(`/api/api/v1/auth/logout`);
       if (res.ok) {
         setUser({
-          token: "",
+          token: null,
           name: "",
           email: "",
           role: "",
