@@ -1,8 +1,7 @@
 import { createContext, use, useEffect, useState } from "react";
 
-import { useAuthCtx } from "./AuthContext";
-
 import { toast } from "react-toastify";
+import { useAuthCtx } from "./AuthContext";
 
 const JobsContext = createContext();
 

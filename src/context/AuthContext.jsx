@@ -2,6 +2,8 @@ import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
+import TimeManager from "../util/TimeManager";
+
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -21,6 +23,7 @@ export function AuthProvider({ children }) {
     }
   });
 
+  const timeManager = new TimeManager();
   const navigate = useNavigate();
 
   const login = async (formData) => {
@@ -63,7 +66,6 @@ export function AuthProvider({ children }) {
     try {
       const res = await fetch(`/api/api/v1/auth/logout`);
       if (res.ok) {
-        localStorage.removeItem("user");
         setUser({
           token: "",
           name: "",
@@ -71,6 +73,8 @@ export function AuthProvider({ children }) {
           role: "",
           isLogin: false,
         });
+        timeManager.cancelSchedule();
+        localStorage.removeItem("user");
         navigate("/", { replace: true });
         toast.info("Logged out successfully!");
       }
@@ -85,11 +89,19 @@ export function AuthProvider({ children }) {
         const {
           token,
           user: { name, email, role },
+          expiresIn,
         } = await res.json();
-        const userData = { token, name, email, role, isLogin: !!token };
+        const userData = {
+          token,
+          name,
+          email,
+          role,
+          isLogin: !!token,
+        };
         localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
-        setLoading(false);
+        const target = timeManager.addToDate(expiresIn);
+        timeManager.scheduleAt(target, logout);
         cb();
         navigate("/", { replace: true });
       } else {
