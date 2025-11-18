@@ -66,6 +66,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("user");
         setUser({
           token: "",
+          name: "",
           email: "",
           role: "",
           isLogin: false,
