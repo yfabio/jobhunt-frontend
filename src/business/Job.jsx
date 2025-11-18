@@ -8,7 +8,7 @@ import { useJobsCtx } from "../context/JobsContext";
 import { useNavigate } from "react-router";
 
 const Job = ({ job }) => {
-  const [edit, setEdit] = useState(false);
+  const [action, setAction] = useState(-1);
   const [show, setShow] = useState(false);
 
   const navigate = useNavigate();
@@ -18,32 +18,40 @@ const Job = ({ job }) => {
   const handleSubmit = (e, id) => {
     e.preventDefault();
 
-    if (edit) {
+    if (action === 1) {
       navigate(`../postjob/${id}`, { replace: true });
     } else {
       deleteJob(id);
     }
+    setAction(-1);
     setShow(false);
-    setEdit(false);
   };
 
-  const handleEdit = () => {
-    setEdit(true);
+  const handleEdit = (value) => {
     setShow(true);
+    setAction(value);
+  };
+
+  const handleDelete = (value) => {
+    setShow(true);
+    setAction(value);
   };
 
   return (
     <>
       {show && (
         <Modal
-          title={`${edit ? "Edit Job" : "Remove Job"}`}
+          title={`${action === 1 ? "Update Job" : "Remove Job"}`}
           close={() => setShow(false)}>
           <form
             onSubmit={(e) => handleSubmit(e, job._id)}
             className="flex flex-col gap-2">
-            <p className="text-center font-medium text-red-500">
+            <p
+              className={`text-center font-medium my-2.5  ${
+                action === 1 ? "text-slate-600" : "text-red-600"
+              }`}>
               {`Are you sure, you want to ${
-                edit ? "edit" : "remove"
+                action === 1 ? "update" : "remove"
               } this Job?`}
             </p>
             <ButtonsAction
@@ -79,7 +87,7 @@ const Job = ({ job }) => {
 
         <div className="flex items-center justify-start space-x-2 mt-4">
           <button
-            onClick={() => setShow(true)}
+            onClick={() => handleDelete(0)}
             type="button"
             className="group border-0 cursor-pointer py-2 px-2 rounded hover:bg-red-500">
             <FaTrashCan
@@ -88,7 +96,7 @@ const Job = ({ job }) => {
             />
           </button>
           <button
-            onClick={handleEdit}
+            onClick={() => handleEdit(1)}
             type="button"
             className="group border-0 cursor-pointer py-2 px-2 rounded hover:bg-indigo-500">
             <FaPen
