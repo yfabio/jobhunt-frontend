@@ -6,15 +6,46 @@ import { useAuthCtx } from "../context/AuthContext";
 
 import Modal from "../components/Modal";
 import ButtonsAction from "../components/ButtonsAction";
+import { toast } from "react-toastify";
 
 const JobItem = ({ job, accordion, setAccordion }) => {
   const [modal, setModal] = useState({ open: false, job: {} });
+  const [isJobAlreadyApplied, setIsJobAlreadyApplied] = useState(false);
   const { user } = useAuthCtx();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setModal(false);
   };
+
+  useState(() => {
+    const getIsJobAlreadyApplied = async () => {
+      try {
+        if (user.token && job._id) {
+          const res = await fetch(`/api/api/v1/members/applied/${job._id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          });
+
+          if (res.ok) {
+            const { data } = await res.json();
+            setIsJobAlreadyApplied(data);
+          } else {
+            const { message } = await res.json();
+            toast.error(message);
+          }
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    if (user.token) {
+      getIsJobAlreadyApplied();
+    }
+  }, []);
 
   return (
     <>
@@ -51,7 +82,7 @@ const JobItem = ({ job, accordion, setAccordion }) => {
         {/* 
           This piece of jsx is for mobile and small devices 
       */}
-        {user.role === "member" && (
+        {user.role === "member" && !isJobAlreadyApplied && (
           <button
             onClick={() => setModal({ open: true, job })}
             type="button"
@@ -59,18 +90,23 @@ const JobItem = ({ job, accordion, setAccordion }) => {
             Apply
           </button>
         )}
+        {user.role === "member" && isJobAlreadyApplied && (
+          <p className="text-lg font-semibold text-rose-500 underline mt-2">
+            Applied
+          </p>
+        )}
         <p className="font-medium text-gray-500">{job.company}</p>
         <p className="font-medium text-gray-500">{job.location}</p>
         <button
           onClick={() =>
-            setAccordion((prev) => ({ open: !prev.open, id: job.id }))
+            setAccordion((prev) => ({ open: !prev.open, id: job._id }))
           }
           type="button"
           className="md:hidden rounded-sm w-full px-4 py-3 flex justify-between items-center bg-gray-50 hover:bg-gray-100 ">
           <span className="font-medium text-left">Show Job Detail</span>
           <FaChevronDown
             className={`w-5 h-5 transition-transform duration-300 ${
-              accordion.open && accordion.id === job.id ? "rotate-180" : ""
+              accordion.open && accordion.id === job._id ? "rotate-180" : ""
             }`}
           />
         </button>
@@ -78,7 +114,7 @@ const JobItem = ({ job, accordion, setAccordion }) => {
         {/* 
           This piece of jsx is for mobile and small devices 
       */}
-        {accordion.open && accordion.id == job.id && (
+        {accordion.open && accordion.id === job._id && (
           <div className="max-h-96 border border-gray-300 text-xl space-y-2 rounded mt-2 p-4 overflow-y-scroll transition-all duration-700 ease-in-out md:hidden">
             <h2 className="text-4xl font-bold capitalize">{job.title}</h2>
             <p className="space-x-1">
