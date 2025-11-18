@@ -23,8 +23,8 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
-  const { user } = useAuthCtx();
   const { loadJobs } = useJobsCtx();
+  const { user } = useAuthCtx();
 
   useEffect(() => {
     if (user.token) {
