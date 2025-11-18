@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
     } else {
       return {
         token: "",
+        name: "",
         email: "",
         role: "",
         isLogin: false,
@@ -82,9 +83,9 @@ export function AuthProvider({ children }) {
       if (res.ok) {
         const {
           token,
-          user: { email, role },
+          user: { name, email, role },
         } = await res.json();
-        const userData = { token, email, role, isLogin: !!token };
+        const userData = { token, name, email, role, isLogin: !!token };
         localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
         setLoading(false);

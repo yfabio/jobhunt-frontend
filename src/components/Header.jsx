@@ -64,6 +64,11 @@ const Header = () => {
               </li>
             )}
             {user.isLogin && (
+              <li>
+                <p className="font-light text-slate-600">{`Welcome ${user.name}`}</p>
+              </li>
+            )}
+            {user.isLogin && (
               <li className="group font-semibold text-sky-600 hover:underline">
                 <button
                   type="button"

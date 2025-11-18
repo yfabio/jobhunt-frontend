@@ -62,20 +62,22 @@ const JobInfo = () => {
           toast.error(message);
         }
 
-        res = await fetch(`/api/api/v1/members/applied/${params.id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
+        if (user.token && params.id) {
+          res = await fetch(`/api/api/v1/members/applied/${params.id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          });
 
-        if (res.ok) {
-          const { data } = await res.json();
-          setIsJobAlreadyApplied(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
+          if (res.ok) {
+            const { data } = await res.json();
+            setIsJobAlreadyApplied(data);
+          } else {
+            const { message } = await res.json();
+            toast.error(message);
+          }
         }
       } catch (error) {
         toast.error(error.message);
