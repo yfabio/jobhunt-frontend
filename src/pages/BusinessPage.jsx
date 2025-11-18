@@ -61,7 +61,9 @@ const BusinessPage = () => {
   };
 
   useEffect(() => {
-    loadBusinessProfile();
+    if (user.token) {
+      loadBusinessProfile();
+    }
   }, [user.token]);
 
   const MAX_FILE_SIZE_MB = 1;
