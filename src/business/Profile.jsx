@@ -15,7 +15,7 @@ const Profile = () => {
   const [edit, setEdit] = useState(false);
   const [state, dispatch, formData] = useValidate(ProfileInputs);
   const [businesProfile, setBusinessProfile] = useState({
-    id: null,
+    _id: null,
     name: "",
     industry: "",
     location: "",
@@ -53,7 +53,9 @@ const Profile = () => {
         toast.error(error.message);
       }
     };
-    loadBusinessProfile();
+    if (user.token) {
+      loadBusinessProfile();
+    }
   }, []);
 
   const submitHandler = async (e) => {
@@ -63,9 +65,9 @@ const Profile = () => {
       try {
         setLoading(true);
         let res;
-        if (businesProfile.id && edit) {
+        if (businesProfile._id && edit) {
           res = await fetch(
-            `/api/api/v1/businesses/profile/${businesProfile.id}`,
+            `/api/api/v1/businesses/profile/${businesProfile._id}`,
             {
               method: "PUT",
               headers: {
@@ -88,7 +90,7 @@ const Profile = () => {
         if (res.ok) {
           const { data } = await res.json();
           setBusinessProfile(data);
-          if (businesProfile.id && edit) {
+          if (businesProfile._id && edit) {
             toast.success("Profile updated successfully");
           } else {
             toast.success("Profile created successfully");
