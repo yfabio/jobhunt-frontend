@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 
 const JobInfo = () => {
   const [job, setJob] = useState({});
+  const [isJobAlreadyApplied, setIsJobAlreadyApplied] = useState(false);
   const [modal, setModal] = useState({ open: false, job: {} });
   const { user } = useAuthCtx();
 
@@ -41,7 +42,7 @@ const JobInfo = () => {
         toast.success("Job applied successfully!");
       } else {
         const { message } = await res.json();
-        toast.error(message);
+        toast.warn(message);
       }
       setModal({ open: false, job: {} });
     } catch (error) {
@@ -52,10 +53,26 @@ const JobInfo = () => {
   useEffect(() => {
     const loadJob = async () => {
       try {
-        const res = await fetch(`/api/api/v1/jobs/${params.id}`);
+        let res = await fetch(`/api/api/v1/jobs/${params.id}`);
         if (res.ok) {
           const { data } = await res.json();
           setJob(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
+        }
+
+        res = await fetch(`/api/api/v1/members/applied/${params.id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        if (res.ok) {
+          const { data } = await res.json();
+          setIsJobAlreadyApplied(data);
         } else {
           const { message } = await res.json();
           toast.error(message);
@@ -99,7 +116,7 @@ const JobInfo = () => {
         <section className="hidden flex-2 md:block">
           <div className="flex flex-col border border-gray-300 rounded p-4 gap-2 flex-2">
             <h2 className="text-4xl font-bold capitalize">{job.title}</h2>
-            {user.role === "member" && (
+            {user.role === "member" && !isJobAlreadyApplied && (
               <button
                 onClick={() => setModal({ open: true, job })}
                 type="button"
@@ -107,6 +124,12 @@ const JobInfo = () => {
                 Apply
               </button>
             )}
+            {user.role === "member" && isJobAlreadyApplied && (
+              <p className="text-lg font-semibold text-rose-500 underline mt-2">
+                Applied
+              </p>
+            )}
+            <p></p>
             <span
               className="w-20 h-20 rounded-full bg-contain bg-no-repeat bg-center"
               style={imageStyle}></span>
