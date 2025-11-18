@@ -98,8 +98,8 @@ export function AuthProvider({ children }) {
           role,
           isLogin: !!token,
         };
-        localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
         const target = timeManager.addToDate(expiresIn);
         timeManager.scheduleAt(target, logout);
         cb();
