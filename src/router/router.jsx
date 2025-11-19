@@ -19,6 +19,7 @@ import BusinessPage from "../pages/BusinessPage";
 import BusinessProfile from "../business/Profile";
 import BusinessPostJob from "../business/PostJob";
 import BusinessJobs from "../business/Jobs";
+import BusinessMembers from "../business/Members";
 
 const router = createBrowserRouter([
   {
@@ -76,6 +77,7 @@ const router = createBrowserRouter([
             children: [{ path: ":id", element: <BusinessPostJob /> }],
           },
           { path: "jobs", element: <BusinessJobs /> },
+          { path: "candidates", element: <BusinessMembers /> },
           { path: "accountsettings", element: <BussinesAccountSettings /> },
         ],
       },

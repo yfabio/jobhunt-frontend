@@ -194,7 +194,7 @@ const BusinessPage = () => {
                 </NavLink>
               </li>
 
-              {jobs.length > 0 && (
+              {jobs && (
                 <li>
                   <NavLink
                     to="jobs"
@@ -206,6 +206,17 @@ const BusinessPage = () => {
                   </NavLink>
                 </li>
               )}
+
+              <li>
+                <NavLink
+                  to="candidates"
+                  className={({ isActive }) =>
+                    `w-full font-semibold py-2 pl-1 text-slate-600 cursor-pointer border border-transparent border-l-4 transition-colors hover:text-slate-700  hover:border-l-slate-600
+                ${isActive ? "border-l-slate-600" : ""} `
+                  }>
+                  {"Candidates"}
+                </NavLink>
+              </li>
 
               <li>
                 <NavLink
