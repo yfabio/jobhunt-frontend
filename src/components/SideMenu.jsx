@@ -2,14 +2,79 @@ import { NavLink } from "react-router";
 import { useAuthCtx } from "../context/AuthContext";
 
 import { FaUser, FaUserTie } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const SidePanel = ({ isDrawerOpen, toggleDrawerHandler }) => {
   const { user, logout } = useAuthCtx();
+
+  const [businesProfile, setBusinessProfile] = useState({
+    _id: null,
+    name: "",
+    industry: "",
+    location: "",
+  });
+
+  const [memberProfile, setMemberProfile] = useState({
+    _id: null,
+    empStatus: "",
+    firstName: "",
+    lastName: "",
+    jobTitle: "",
+    location: "",
+    employer: "",
+    primaryIndustry: "",
+    resumePath: "",
+    resumeName: "",
+  });
 
   const handleLogout = (e) => {
     toggleDrawerHandler();
     logout();
   };
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        if (user.role === "member") {
+          const res = await fetch(`/api/api/v1/members/profile`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          });
+          if (res.ok) {
+            const { data } = await res.json();
+            setMemberProfile(data);
+          } else {
+            const { message } = await res.json();
+            toast.error(message);
+          }
+        } else if (user.role === "business") {
+          const res = await fetch("/api/api/v1/businesses/profile", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          });
+          if (res.ok) {
+            const { data } = await res.json();
+            setBusinessProfile(data);
+          } else {
+            const { message } = await res.json();
+            toast.error(message);
+          }
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+    if (user.token) {
+      loadUserProfile();
+    }
+  }, [user.token]);
 
   return (
     <>
@@ -74,13 +139,15 @@ const SidePanel = ({ isDrawerOpen, toggleDrawerHandler }) => {
             </div>
 
             <div className="flex flex-col mt-4">
-              <h2 className="font-medium text-lg">{user.role}</h2>
-              {/* TODO needs to change here when the user is completed */}
-              {user.role === "member" && (
-                <p className="font-light">{"Software Developer"}</p>
+              {user.role === "member" ? (
+                <h2 className="font-medium text-lg">{`${memberProfile.firstName} ${memberProfile.lastName}`}</h2>
+              ) : (
+                <h2 className="font-medium text-lg">{businesProfile.name}</h2>
               )}
-              {user.role === "business" && (
-                <p className="font-light">{"Consulting"}</p>
+              {user.role === "member" ? (
+                <p className="font-light">{memberProfile.jobTitle}</p>
+              ) : (
+                <p className="font-light">{businesProfile.industry}</p>
               )}
             </div>
 
