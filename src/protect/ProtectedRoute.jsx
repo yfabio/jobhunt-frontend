@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuthCtx } from "../context/AuthContext";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ element }) => {
   const { user } = useAuthCtx();
 
   if (!user.token) {
@@ -13,7 +13,7 @@ const ProtectedRoute = () => {
     );
   }
 
-  return <Outlet />;
+  return element;
 };
 
 export default ProtectedRoute;
