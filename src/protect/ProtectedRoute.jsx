@@ -1,10 +1,10 @@
-import { Navigate } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import { useAuthCtx } from "../context/AuthContext";
 
-const ProtectedRoute = ({ element }) => {
+const ProtectedRoute = () => {
   const { user } = useAuthCtx();
 
-  if (!user) {
+  if (!user.token) {
     return (
       <Navigate
         to="/signin"
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ element }) => {
     );
   }
 
-  return element;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
