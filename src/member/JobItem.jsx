@@ -91,7 +91,7 @@ const JobItem = ({ job, accordion, setAccordion }) => {
           </button>
         )}
         {user.role === "member" && isJobAlreadyApplied && (
-          <p className="text-lg font-semibold text-rose-500 underline mt-2">
+          <p className="md:hidden text-lg font-semibold text-rose-500 underline mt-2">
             Applied
           </p>
         )}
