@@ -103,7 +103,7 @@ const Member = ({ member, handlePreview, handleResumeDownload }) => {
             {true ? (
               <>
                 <button
-                  target="_blank"
+                  onClick={() => handlePreview(member._id)}
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
                   <FaEye className="w-5 h-5" />
