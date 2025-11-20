@@ -40,6 +40,31 @@ const Members = () => {
     }
   }, []);
 
+  const handleResumeDownload = async (id) => {
+    try {
+      const res = await fetch(`/api/api/v1/businesses/resume/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        //window.open(url, "_blank");
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "resume.pdf";
+        link.click();
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <section className="w-full rounded p-6 border-[1px] border-gray-200">
       <h1 className="text-2xl font-bold my-20">Candidates</h1>
@@ -48,6 +73,8 @@ const Members = () => {
           <Member
             key={member._id}
             member={member}
+            handlePreview={() => {}}
+            handleResumeDownload={handleResumeDownload}
           />
         ))}
       </div>

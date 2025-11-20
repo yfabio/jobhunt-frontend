@@ -10,7 +10,7 @@ import {
   FaBuilding,
 } from "react-icons/fa6";
 
-const Member = ({ member }) => {
+const Member = ({ member, handlePreview, handleResumeDownload }) => {
   return (
     <>
       <div className="group relative bg-white rounded-lg border border-gray-100 hover:bg-gray-100">
@@ -102,16 +102,16 @@ const Member = ({ member }) => {
           <div className="mt-6 flex gap-3">
             {true ? (
               <>
-                <a
+                <button
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white font-medium py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
                   <FaEye className="w-5 h-5" />
                   Preview Resume
-                </a>
+                </button>
 
                 <button
-                  onClick={() => {}}
+                  onClick={(e) => handleResumeDownload(member._id)}
                   className="flex items-center justify-center gap-2 px-5 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors border border-gray-300">
                   <FaDownload className="w-5 h-5" />
                 </button>
