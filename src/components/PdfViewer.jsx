@@ -8,20 +8,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import ButtonsAction from "./ButtonsAction";
+import Spinner from "./Spinner";
+
 import { toast } from "react-toastify";
 import { useAuthCtx } from "../context/AuthContext";
 
 const PdfViewer = ({ file, reset, update }) => {
   const [pdfData, setPdfData] = useState(null);
-  const [display, setDisplay] = useState(false);
-
-  const handleSucces = () => {};
 
   const { user } = useAuthCtx();
-
-  const handleError = (e) => {
-    console.log(e);
-  };
 
   useEffect(() => {
     if (!file) {
@@ -29,7 +24,6 @@ const PdfViewer = ({ file, reset, update }) => {
     }
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      setDisplay(true);
       setPdfData(new Uint8Array(fileReader.result));
     };
     fileReader.readAsArrayBuffer(file);
@@ -66,14 +60,18 @@ const PdfViewer = ({ file, reset, update }) => {
   };
 
   const handleClose = () => {
-    setDisplay(false);
     setPdfData(null);
     reset();
   };
 
+  const handleError = (e) => {
+    setPdfData(null);
+    toast.error("Error downloading file");
+  };
+
   return (
     <>
-      {display && (
+      {pdfData && (
         <Modal
           close={handleClose}
           title={"Resume File"}>
@@ -82,13 +80,11 @@ const PdfViewer = ({ file, reset, update }) => {
             className="flex flex-col gap-4">
             <Document
               file={{ data: pdfData }}
-              onLoadSuccess={handleSucces}
               onLoadError={handleError}
-              loading="Plase wait loading...">
+              loading={<Spinner />}>
               <Page
                 pageNumber={1}
                 scale={1.5}
-                onAnimationStart={true}
               />
             </Document>
             <ButtonsAction
