@@ -63,7 +63,7 @@ const Header = () => {
                 <NavLink to="/signin">Sign In</NavLink>
               </li>
             )}
-            {user.isLogin && (
+            {user.isLogin && user.name !== "unknown" && (
               <li>
                 <p className="font-light text-slate-600">{`Welcome ${user.name}`}</p>
               </li>
