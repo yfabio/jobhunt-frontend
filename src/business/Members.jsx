@@ -133,17 +133,25 @@ const Members = () => {
       )}
       <section className="w-full rounded p-6 border-[1px] border-gray-200">
         <h1 className="text-2xl font-bold my-20">Candidates</h1>
-        <div className="flex flex-col gap-2">
-          {members.map((member) => (
-            <Member
-              key={member._id}
-              member={member}
-              handlePreview={handlePreview}
-              handleResumeDownload={handleResumeDownload}
-            />
-          ))}
-        </div>
-        <Pagination />
+        {members.length > 0 ? (
+          <>
+            <div className="flex flex-col gap-2">
+              {members.map((member) => (
+                <Member
+                  key={member._id}
+                  member={member}
+                  handlePreview={handlePreview}
+                  handleResumeDownload={handleResumeDownload}
+                />
+              ))}
+            </div>
+            <Pagination />
+          </>
+        ) : (
+          <p className="w-full text-center font-semibold text-lg text-sky-600">
+            You have no candidates yet!
+          </p>
+        )}
       </section>
     </>
   );
