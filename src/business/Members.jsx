@@ -18,7 +18,6 @@ import { toast } from "react-toastify";
 const Members = () => {
   const [loading, setLoading] = useState(false);
   const [members, setMembers] = useState([]);
-  const [show, setShow] = useState(false);
   const [pdfData, setPdfData] = useState(null);
 
   const { user } = useAuthCtx();
@@ -92,7 +91,6 @@ const Members = () => {
         const fileReader = new FileReader();
         fileReader.onload = () => {
           setPdfData(new Uint8Array(fileReader.result));
-          setShow(true);
         };
         fileReader.readAsArrayBuffer(blob);
       } else {
@@ -108,30 +106,27 @@ const Members = () => {
 
   const handleCloseModal = () => {
     setPdfData(null);
-    setShow(false);
   };
 
-  const handleErrorPreview = () => {
+  const handleErrorPreview = (error) => {
     setPdfData(null);
-    setShow(false);
     toast.error("Error downloading file");
   };
 
   return (
     <>
       {loading && <Spinner />}
-      {show && pdfData && (
+      {pdfData && (
         <Modal
           close={handleCloseModal}
           title={"Previvew Resume"}>
           <Document
             file={{ data: pdfData }}
             onLoadError={handleErrorPreview}
-            loading="Plase wait loading...">
+            loading={<Spinner />}>
             <Page
               pageNumber={1}
               scale={1.5}
-              onAnimationStart={true}
             />
           </Document>
         </Modal>
