@@ -73,13 +73,16 @@ export function AuthProvider({ children }) {
           role: "",
           isLogin: false,
         });
-        timeManager.cancelSchedule();
         localStorage.removeItem("user");
-        navigate("/", { replace: true });
+        timeManager.cancelSchedule();
         toast.info("Logged out successfully!");
+        navigate("/", { replace: true });
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      timeManager.cancelSchedule();
+      localStorage.removeItem("user");
     }
   };
 
