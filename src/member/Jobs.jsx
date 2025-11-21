@@ -7,13 +7,18 @@ import { toast } from "react-toastify";
 import { useAuthCtx } from "../context/AuthContext";
 
 const Jobs = () => {
-  const [jobs, setJobs] = useState([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 0,
+    currentPage: 1,
+    jobs: [],
+  });
 
   const { user } = useAuthCtx();
 
-  const loadAppliedJobs = async () => {
+  const loadAppliedJobs = async (page = 1) => {
     try {
-      const res = await fetch("/api/api/v1/members/jobs", {
+      const res = await fetch(`/api/api/v1/members/jobs?page=${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -22,7 +27,7 @@ const Jobs = () => {
       });
       if (res.ok) {
         const { data } = await res.json();
-        setJobs(data);
+        setPagination(data);
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -40,11 +45,15 @@ const Jobs = () => {
     loadAppliedJobs();
   };
 
+  const handlePageChange = (page) => {
+    loadAppliedJobs(page);
+  };
+
   return (
     <section className="w-full rounded p-6 border-[1px] border-gray-200">
       <h1 className="text-2xl font-bold my-20">Jobs</h1>
       <div className="flex flex-col gap-2">
-        {jobs.map((job, idx) => (
+        {pagination.jobs.map((job, idx) => (
           <JobApplied
             update={updateJobs}
             key={idx}
@@ -52,7 +61,10 @@ const Jobs = () => {
           />
         ))}
       </div>
-      <Pagination />
+      <Pagination
+        totalPages={pagination.totalPages}
+        pageChange={handlePageChange}
+      />
     </section>
   );
 };
