@@ -1,19 +1,12 @@
 import { useState } from "react";
 
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import { useJobsCtx } from "../context/JobsContext";
-
-const JOBS_PER_PAGE = 5;
 
 const MAX_PAGE = 5;
 
-const Pagination = () => {
+const Pagination = ({ totalPages, pageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageGroup, setPageGroup] = useState(0);
-
-  const { nextCurrentPage, totalJobs } = useJobsCtx();
-
-  const totalPages = Math.ceil(totalJobs / JOBS_PER_PAGE);
 
   const startPage = pageGroup * MAX_PAGE + 1;
 
@@ -27,7 +20,7 @@ const Pagination = () => {
 
   const nextPageHandler = (page) => {
     setCurrentPage((_) => page);
-    nextCurrentPage(page, JOBS_PER_PAGE);
+    pageChange(page);
   };
 
   const nextPage = () => {

@@ -11,37 +11,49 @@ import { toast } from "react-toastify";
 
 const HomePage = () => {
   const [loading, setLoading] = useState(false);
-  const [jobs, setJobs] = useState([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 0,
+    currentPage: 1,
+    jobs: [],
+  });
+
   const [accordion, setAccordion] = useState({ open: false, id: null });
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (jobs.length > 0 && location.pathname === "/") {
-      navigate(`${jobs[0]._id}`, { replace: true });
+    if (pagination.jobs.length > 0 && location.pathname === "/") {
+      navigate(`${pagination.jobs[0]._id}`, { replace: true });
     }
-  }, [jobs, location.pathname, navigate]);
+  }, [pagination.jobs, location.pathname, navigate]);
+
+  const loadJobs = async (page = 1) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/api/v1/jobs?page=${page}`);
+      if (res.ok) {
+        const { data } = await res.json();
+        setPagination(data);
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadJobs = async () => {
-      try {
-        const res = await fetch("/api/api/v1/jobs");
-        if (res.ok) {
-          const { data } = await res.json();
-          setJobs(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadJobs();
   }, []);
+
+  const handlePageChange = (page) => {
+    loadJobs(page);
+  };
 
   return (
     <>
@@ -51,7 +63,7 @@ const HomePage = () => {
         <FilterJobs />
         <div className="flex flex-col gap-5 mt-4 md:flex-row">
           <div className="flex flex-col items-center flex-1 md:items-start gap-4">
-            {jobs.map((job) => (
+            {pagination.jobs.map((job) => (
               <JobItem
                 key={job._id}
                 job={job}
@@ -59,7 +71,10 @@ const HomePage = () => {
                 setAccordion={setAccordion}
               />
             ))}
-            <Pagination />
+            <Pagination
+              totalPages={pagination.totalPages}
+              pageChange={handlePageChange}
+            />
           </div>
           <div className="flex-2">
             <Outlet />
