@@ -2,8 +2,9 @@ import { FaMagnifyingGlass, FaLocationDot } from "react-icons/fa6";
 
 import FilterInput from "../model/FilterInput";
 import useValidate from "../hooks/useValidate";
+import { FaTimes } from "react-icons/fa";
 
-const FilterJobs = () => {
+const FilterJobs = ({ handleSearchChange, clearSearch }) => {
   const [state, dispatch, formData] = useValidate(FilterInput);
 
   const handleChange = (e) => {
@@ -19,8 +20,11 @@ const FilterJobs = () => {
   };
 
   const handleSearch = () => {
-    console.log(formData);
-    clear();
+    handleSearchChange(formData);
+  };
+
+  const handleClearInputs = () => {
+    clearSearch(clear);
   };
 
   return (
@@ -67,6 +71,15 @@ const FilterJobs = () => {
           Find jobs
         </button>
       </div>
+      {formData.isFormValid && (
+        <div className="max-w-4xl mx-auto my-2">
+          <button
+            onClick={handleClearInputs}
+            className="w-full text-start text-sky-600 ml-4 cursor-pointer hover:underline hover:text-sky-700">
+            clear inputs
+          </button>
+        </div>
+      )}
       <button
         onClick={handleSearch}
         disabled={!state.isFormValid}

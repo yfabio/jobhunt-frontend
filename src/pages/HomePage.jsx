@@ -29,10 +29,12 @@ const HomePage = () => {
     }
   }, [pagination.jobs, location.pathname, navigate]);
 
-  const loadJobs = async (page = 1) => {
+  const loadJobs = async (page = 1, searched = "") => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/api/v1/jobs?page=${page}`);
+      const res = await fetch(
+        `/api/api/v1/jobs?page=${page}&search=${searched}`
+      );
       if (res.ok) {
         const { data } = await res.json();
         setPagination(data);
@@ -55,12 +57,24 @@ const HomePage = () => {
     loadJobs(page);
   };
 
+  const handleSearchChange = (formData) => {
+    loadJobs(pagination.currentPage, `${formData.search} ${formData.location}`);
+  };
+
+  const clearSearch = (clear) => {
+    clear();
+    loadJobs();
+  };
+
   return (
     <>
       {loading && <Spinner />}
       <section className="container mx-auto">
         {/* Filter */}
-        <FilterJobs />
+        <FilterJobs
+          handleSearchChange={handleSearchChange}
+          clearSearch={clearSearch}
+        />
         <div className="flex flex-col gap-5 mt-4 md:flex-row">
           <div className="flex flex-col items-center flex-1 md:items-start gap-4">
             {pagination.jobs.map((job) => (
