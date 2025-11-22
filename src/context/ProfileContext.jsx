@@ -8,8 +8,11 @@ export function ProfileProvider({ children }) {
     industry: "",
   });
   const [memberProfile, setMemberProfile] = useState({
+    empStatus: "",
     firstName: "",
     lastName: "",
+    jobTitle: "",
+    employer: "",
   });
 
   return (

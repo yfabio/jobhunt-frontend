@@ -12,6 +12,7 @@ import Dropdown from "../components/Dropdown";
 import { toast } from "react-toastify";
 
 import { useAuthCtx } from "../context/AuthContext";
+import { useProfileCtx } from "../context/ProfileContext";
 
 const Profile = () => {
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,8 @@ const Profile = () => {
   const [show, setShow] = useState(false);
 
   const { user } = useAuthCtx();
+
+  const { setMemberProfile: setMemberProfileCtx } = useProfileCtx();
 
   const filePickerRef = useRef();
 
@@ -66,6 +69,16 @@ const Profile = () => {
   useEffect(() => {
     loadUserProfile();
   }, []);
+
+  useEffect(() => {
+    setMemberProfileCtx({
+      empStatus: memberProfile.empStatus,
+      firstName: memberProfile.firstName,
+      lastName: memberProfile.lastName,
+      jobTitle: memberProfile.jobTitle,
+      employer: memberProfile.employer,
+    });
+  }, [memberProfile]);
 
   const submitHandler = async (e) => {
     e.preventDefault();

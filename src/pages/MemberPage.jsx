@@ -3,6 +3,8 @@ import { NavLink, Outlet } from "react-router";
 
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 import { useAuthCtx } from "../context/AuthContext";
+import { useProfileCtx } from "../context/ProfileContext";
+
 import { toast } from "react-toastify";
 
 import Modal from "../components/Modal";
@@ -30,6 +32,8 @@ const MemberPage = () => {
   const imagePickerRef = useRef();
 
   const { user } = useAuthCtx();
+
+  const { memberProfile } = useProfileCtx();
 
   let styleImage;
 
@@ -163,9 +167,9 @@ const MemberPage = () => {
                 className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-cover bg-center"
                 style={styleImage}>
                 {member.picturePath === "noimage" && (
-                  <span className="text-4xl font-bold ">{`${member.firstName.charAt(
+                  <span className="text-4xl font-bold ">{`${memberProfile.firstName.charAt(
                     0
-                  )}${member.lastName.charAt(0)}`}</span>
+                  )}${memberProfile.lastName.charAt(0)}`}</span>
                 )}
                 <button
                   onClick={handleImagePicker}
@@ -186,13 +190,13 @@ const MemberPage = () => {
                 />
               </div>
               <h2 className="font-semibold text-2xl">
-                {member.firstName}
+                {memberProfile.firstName}
                 {` `}
-                {member.lastName}
+                {memberProfile.lastName}
               </h2>
-              {member.empStatus === "employed" && (
+              {memberProfile.empStatus === "Employed" && (
                 <p className="font-light text-gray-500">
-                  {`${member.jobTitle} at ${member.employer}`}
+                  {`${memberProfile.jobTitle} at ${memberProfile.employer}`}
                 </p>
               )}
             </div>
