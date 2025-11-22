@@ -11,8 +11,8 @@ const AppLayout = () => {
     <>
       <AuthProvider>
         <JobsProvider>
-          <Header />
-          <main className="container mx-auto p-4">
+          <main className="container mx-auto px-8">
+            <Header />
             <ProfileProvider>
               <Outlet />
             </ProfileProvider>
