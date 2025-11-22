@@ -7,6 +7,7 @@ import ButtonsAction from "../components/ButtonsAction";
 
 import { useAuthCtx } from "../context/AuthContext";
 import { useJobsCtx } from "../context/JobsContext";
+import { useProfileCtx } from "../context/ProfileContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
@@ -23,6 +24,8 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
+  const { setBusinessProfile: setBusinessProfileCtx } = useProfileCtx();
+
   const { loadJobs } = useJobsCtx();
   const { user } = useAuthCtx();
 
@@ -31,6 +34,13 @@ const Profile = () => {
       loadJobs();
     }
   }, [user.token]);
+
+  useEffect(() => {
+    setBusinessProfileCtx({
+      name: businesProfile.name,
+      industry: businesProfile.industry,
+    });
+  }, [businesProfile]);
 
   useEffect(() => {
     const loadBusinessProfile = async () => {

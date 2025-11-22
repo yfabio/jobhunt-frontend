@@ -4,6 +4,7 @@ import { NavLink, Outlet, useNavigate } from "react-router";
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
 import { useAuthCtx } from "../context/AuthContext";
 import { useJobsCtx } from "../context/JobsContext";
+import { useProfileCtx } from "../context/ProfileContext";
 
 import { toast } from "react-toastify";
 
@@ -26,6 +27,7 @@ const BusinessPage = () => {
 
   const imagePickerRef = useRef();
 
+  const { businessProfile } = useProfileCtx();
   const { user } = useAuthCtx();
   const { jobs, reset } = useJobsCtx();
 
@@ -146,9 +148,11 @@ const BusinessPage = () => {
                 className="flex flex-col items-center justify-center w-22 h-22 rounded-full relative shadow bg-center bg-contain bg-no-repeat"
                 style={styleImage}>
                 {business.logoPath.includes("noimage") && (
-                  <span className="text-4xl font-bold ">{`${business.name
+                  <span className="text-4xl font-bold ">{`${businessProfile.name
                     .toUpperCase()
-                    .charAt(0)}${business.name.toUpperCase().charAt(1)}`}</span>
+                    .charAt(0)}${businessProfile.name
+                    .toUpperCase()
+                    .charAt(1)}`}</span>
                 )}
                 <button
                   onClick={handleImagePicker}
@@ -168,8 +172,10 @@ const BusinessPage = () => {
                   onChange={handleImage}
                 />
               </div>
-              <h2 className="font-semibold text-2xl">{business.name}</h2>
-              <p className="font-light text-gray-500">{business.industry}</p>
+              <h2 className="font-semibold text-2xl">{businessProfile.name}</h2>
+              <p className="font-light text-gray-500">
+                {businessProfile.industry}
+              </p>
             </div>
             <div className="my-4 border-b-[1px] border-b-slate-600"></div>
             <ul className="flex flex-col gap-6">
