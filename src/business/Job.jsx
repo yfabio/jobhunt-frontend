@@ -98,10 +98,10 @@ const Job = ({ job }) => {
           <button
             onClick={() => handleEdit(1)}
             type="button"
-            className="group border-0 cursor-pointer py-2 px-2 rounded hover:bg-indigo-500">
+            className="group border-0 cursor-pointer py-2 px-2 rounded hover:bg-sky-600">
             <FaPen
               size={16}
-              className="group-hover:text-white"
+              className="text-sky-600 group-hover:text-white"
             />
           </button>
         </div>
