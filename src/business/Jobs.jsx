@@ -4,7 +4,7 @@ import { useJobsCtx } from "../context/JobsContext";
 import Job from "./Job";
 
 const Jobs = () => {
-  const { jobs } = useJobsCtx();
+  const { jobs, totalPages, handlePageChange } = useJobsCtx();
 
   return (
     <section className="w-full rounded p-6 border-[1px] border-gray-200">
@@ -17,7 +17,10 @@ const Jobs = () => {
           />
         ))}
       </div>
-      <Pagination />
+      <Pagination
+        pageChange={handlePageChange}
+        totalPages={totalPages}
+      />
     </section>
   );
 };

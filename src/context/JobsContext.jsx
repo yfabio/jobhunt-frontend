@@ -5,21 +5,26 @@ import { useAuthCtx } from "./AuthContext";
 
 const JobsContext = createContext();
 
-const JOBS_PER_PAGE = 5;
-
 export function JobsProvider({ children }) {
-  const [jobs, setJobs] = useState([]);
-
-  const nextCurrentPage = (page, limit) => {};
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 0,
+    currentPage: 1,
+    jobs: [],
+  });
 
   const { user } = useAuthCtx();
 
   const addNewJob = (value) => {
-    setJobs((jobs) => [...jobs, value]);
+    setPagination((pag) => {
+      const newJobs = [...pag.jobs];
+      newJobs.push(value);
+      return { ...pag, jobs: newJobs };
+    });
   };
 
   const getJobById = (id) => {
-    return jobs.find((job) => job._id === id);
+    return pagination.jobs.find((job) => job._id === id);
   };
 
   const deleteJob = async (id) => {
@@ -33,27 +38,34 @@ export function JobsProvider({ children }) {
           },
         });
         if (res.ok) {
-          setJobs((jobs) => jobs.filter((job) => job._id !== id));
+          setPagination((pag) => ({
+            ...pag,
+            jobs: pag.jobs.filter((job) => job._id !== id),
+          }));
         } else {
           const { message } = await res.json();
           toast.error(message);
           console.log(message);
         }
       } catch (error) {
-        console.log(error);
         toast.error(error.message);
       }
     }
   };
 
   const reset = () => {
-    setJobs([]);
+    setPagination({
+      total: 0,
+      totalPages: 0,
+      currentPage: 1,
+      jobs: [],
+    });
   };
 
-  const loadJobs = async () => {
+  const loadJobs = async (page = 1) => {
     if (user.token) {
       try {
-        const res = await fetch("/api/api/v1/businesses/jobs", {
+        const res = await fetch(`/api/api/v1/businesses/jobs?page=${page}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -62,7 +74,7 @@ export function JobsProvider({ children }) {
         });
         if (res.ok) {
           const { data } = await res.json();
-          setJobs(data);
+          setPagination(data);
         } else {
           const { message } = await res.json();
           toast.error(message);
@@ -73,17 +85,19 @@ export function JobsProvider({ children }) {
     }
   };
 
+  const handlePageChange = (page) => loadJobs(page);
+
   return (
     <JobsContext.Provider
       value={{
-        jobs,
-        totalJobs: jobs.length,
+        jobs: pagination.jobs,
+        totalPages: pagination.totalPages,
         getJobById,
-        nextCurrentPage,
         deleteJob,
         addNewJob,
         reset,
         loadJobs,
+        handlePageChange,
       }}>
       {children}
     </JobsContext.Provider>

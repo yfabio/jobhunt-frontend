@@ -27,6 +27,7 @@ const Profile = () => {
   const { setBusinessProfile: setBusinessProfileCtx } = useProfileCtx();
 
   const { loadJobs } = useJobsCtx();
+
   const { user } = useAuthCtx();
 
   useEffect(() => {
