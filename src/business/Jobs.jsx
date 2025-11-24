@@ -17,10 +17,12 @@ const Jobs = () => {
           />
         ))}
       </div>
-      <Pagination
-        pageChange={handlePageChange}
-        totalPages={totalPages}
-      />
+      {jobs.length > 0 && (
+        <Pagination
+          pageChange={handlePageChange}
+          totalPages={totalPages}
+        />
+      )}
     </section>
   );
 };
