@@ -38,6 +38,10 @@ class TimeManager {
   cancelSchedule() {
     clearInterval(this.interval);
   }
+
+  remaniningTime(future) {
+    return new Date(future).getTime() - new Date().getTime();
+  }
 }
 
 export default TimeManager;

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
@@ -19,12 +19,15 @@ export function AuthProvider({ children }) {
         email: "",
         role: "",
         isLogin: false,
+        expireDate: null,
       };
     }
   });
 
   const timeManager = new TimeManager();
   const navigate = useNavigate();
+
+  const timerRef = useRef();
 
   const login = async (formData) => {
     try {
@@ -72,19 +75,36 @@ export function AuthProvider({ children }) {
           email: "",
           role: "",
           isLogin: false,
+          expireDate: null,
         });
         localStorage.removeItem("user");
-        timeManager.cancelSchedule();
+        clearTimeout(timerRef.current);
         toast.info("Logged out successfully!");
         navigate("/", { replace: true });
       }
     } catch (error) {
       toast.error(error.message);
     } finally {
-      timeManager.cancelSchedule();
       localStorage.removeItem("user");
     }
   };
+
+  useEffect(() => {
+    if (user.token) {
+      const data = localStorage.getItem("user");
+      if (data) {
+        const userData = JSON.parse(data);
+        if (new Date() > new Date(userData.expireDate)) {
+          logout();
+        } else {
+          timerRef.current = setTimeout(
+            logout,
+            timeManager.remaniningTime(userData.expireDate)
+          );
+        }
+      }
+    }
+  }, [user]);
 
   const tryAuthenticate = async (res, cb) => {
     try {
@@ -100,11 +120,10 @@ export function AuthProvider({ children }) {
           email,
           role,
           isLogin: !!token,
+          expireDate: timeManager.addToDate(expiresIn),
         };
-        setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
-        const target = timeManager.addToDate(expiresIn);
-        timeManager.scheduleAt(target, logout);
+        setUser(userData);
         cb();
         navigate("/", { replace: true });
       } else {
