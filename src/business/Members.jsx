@@ -17,40 +17,50 @@ import { toast } from "react-toastify";
 
 const Members = () => {
   const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState([]);
   const [pdfData, setPdfData] = useState(null);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 0,
+    currentPage: 1,
+    members: [],
+  });
 
   const { user } = useAuthCtx();
 
-  useEffect(() => {
-    const loadCandidates = async () => {
+  const loadCandidates = async (page = 1) => {
+    try {
       try {
-        try {
-          const res = await fetch("/api/api/v1/businesses/members", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-          });
-          if (res.ok) {
-            const { data } = await res.json();
-            setMembers(data);
-          } else {
-            const { message } = await res.json();
-            toast.error(message);
-          }
-        } catch (error) {
-          toast.error(error.message);
+        const res = await fetch(`/api/api/v1/businesses/members?page=${page}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          setPagination(data);
+        } else {
+          const { message } = await res.json();
+          toast.error(message);
         }
       } catch (error) {
         toast.error(error.message);
       }
-    };
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
     if (user.token) {
       loadCandidates();
     }
   }, []);
+
+  const handlePageChange = (page) => {
+    loadCandidates(page);
+  };
 
   const handleResumeDownload = async (id) => {
     try {
@@ -133,19 +143,22 @@ const Members = () => {
       )}
       <section className="w-full rounded p-6 border-[1px] border-gray-200">
         <h1 className="text-2xl font-bold my-20">Candidates</h1>
-        {members.length > 0 ? (
+        {pagination.members.length > 0 ? (
           <>
             <div className="flex flex-col gap-2">
-              {members.map((member) => (
+              {pagination.members.map((member, idx) => (
                 <Member
-                  key={member._id}
+                  key={idx}
                   member={member}
                   handlePreview={handlePreview}
                   handleResumeDownload={handleResumeDownload}
                 />
               ))}
             </div>
-            <Pagination />
+            <Pagination
+              pageChange={handlePageChange}
+              totalPages={pagination.totalPages}
+            />
           </>
         ) : (
           <p className="w-full text-center font-semibold text-lg text-sky-600">
