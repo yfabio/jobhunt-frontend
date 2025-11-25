@@ -22,7 +22,7 @@ const JobItem = ({ job, accordion, setAccordion }) => {
     const getIsJobAlreadyApplied = async () => {
       try {
         if (user.token && job._id) {
-          const res = await fetch(`/api/api/v1/members/applied/${job._id}`, {
+          const res = await fetch(`/api/api/v1/members/apply/${job._id}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

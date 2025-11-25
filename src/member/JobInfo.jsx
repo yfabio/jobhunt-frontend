@@ -63,7 +63,7 @@ const JobInfo = () => {
         }
 
         if (user.token && params.id) {
-          res = await fetch(`/api/api/v1/members/applied/${params.id}`, {
+          res = await fetch(`/api/api/v1/members/apply/${params.id}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
