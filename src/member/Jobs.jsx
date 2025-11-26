@@ -4,7 +4,7 @@ import JobApplied from "./JobApplied";
 import Pagination from "../components/Pagination";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useAuthCtx } from "../context/AuthContext";
+import { useFetch } from "../hooks/useFetch";
 
 const Jobs = () => {
   const [pagination, setPagination] = useState({
@@ -14,24 +14,12 @@ const Jobs = () => {
     jobs: [],
   });
 
-  const { user } = useAuthCtx();
+  const [send] = useFetch();
 
   const loadAppliedJobs = async (page = 1) => {
     try {
-      const res = await fetch(`/api/api/v1/members/jobs?page=${page}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      if (res.ok) {
-        const { data } = await res.json();
-        setPagination(data);
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
-      }
+      const data = await send(`/api/api/v1/members/jobs?page=${page}`);
+      setPagination(data);
     } catch (error) {
       toast.error(error.message);
     }
