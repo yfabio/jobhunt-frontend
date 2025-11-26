@@ -34,7 +34,6 @@ export const useFetch = () => {
 
         if (res.ok) {
           const { data } = await res.json();
-          console.log(data);
           return data;
         } else {
           const { message } = await res.json();
@@ -49,5 +48,5 @@ export const useFetch = () => {
     []
   );
 
-  return [loading, send];
+  return [send, loading];
 };

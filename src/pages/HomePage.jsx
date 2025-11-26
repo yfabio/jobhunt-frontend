@@ -20,7 +20,7 @@ const HomePage = () => {
 
   const [accordion, setAccordion] = useState({ open: false, id: null });
 
-  const [loading, send] = useFetch();
+  const [send, loading] = useFetch();
 
   const navigate = useNavigate();
   const location = useLocation();

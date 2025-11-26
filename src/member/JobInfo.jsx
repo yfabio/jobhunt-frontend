@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router";
 import { FaBriefcase, FaLocationDot } from "react-icons/fa6";
+import { useFetch } from "../hooks/useFetch";
 
 import { useJobsCtx } from "../context/JobsContext";
 import { useAuthCtx } from "../context/AuthContext";
@@ -13,6 +14,9 @@ const JobInfo = () => {
   const [job, setJob] = useState({});
   const [isJobAlreadyApplied, setIsJobAlreadyApplied] = useState(false);
   const [modal, setModal] = useState({ open: false, job: {} });
+
+  const [send] = useFetch();
+
   const { user } = useAuthCtx();
 
   const params = useParams();
@@ -29,21 +33,9 @@ const JobInfo = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await fetch(`/api/api/v1/members/apply/${job._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      if (res.ok) {
-        toast.success("Job applied successfully!");
-      } else {
-        const { message } = await res.json();
-        toast.warn(message);
-      }
+      await send(`/api/api/v1/members/apply/${job._id}`, "PATCH");
+      toast.success("Job applied successfully!");
       setModal({ open: false, job: {} });
     } catch (error) {
       toast.error(error.message);
@@ -53,35 +45,15 @@ const JobInfo = () => {
   useEffect(() => {
     const loadJob = async () => {
       try {
-        let res = await fetch(`/api/api/v1/jobs/${params.id}`);
-        if (res.ok) {
-          const { data } = await res.json();
-          setJob(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-        }
+        let data = await send(`/api/api/v1/jobs/${params.id}`);
+        setJob(data);
 
         if (user.token && params.id) {
-          res = await fetch(`/api/api/v1/members/apply/${params.id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-          });
-
-          if (res.ok) {
-            const { data } = await res.json();
-            setIsJobAlreadyApplied(data);
-          } else {
-            const { message } = await res.json();
-            toast.error(message);
-          }
+          data = await send(`/api/api/v1/members/apply/${params.id}`);
+          setIsJobAlreadyApplied(data);
         }
       } catch (error) {
         toast.error(error.message);
-      } finally {
       }
     };
     loadJob();
