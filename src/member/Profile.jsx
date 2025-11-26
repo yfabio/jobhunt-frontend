@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { FaPen, FaUpload } from "react-icons/fa";
+import { toast } from "react-toastify";
+
+import { useProfileCtx } from "../context/ProfileContext";
+import { useFetch } from "../hooks/useFetch";
 
 import useValidate from "../hooks/useValidate";
 import ProfileInputs from "../model/member/ProfileInput";
@@ -9,13 +13,7 @@ import MessageError from "../components/MessageError";
 import Modal from "../components/Modal";
 import Dropdown from "../components/Dropdown";
 
-import { toast } from "react-toastify";
-
-import { useAuthCtx } from "../context/AuthContext";
-import { useProfileCtx } from "../context/ProfileContext";
-
 const Profile = () => {
-  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [pdf, setPdf] = useState(null);
   const [tooBigFileError, setTooBigFileError] = useState(false);
@@ -36,7 +34,7 @@ const Profile = () => {
   const [option, setOption] = useState(null);
   const [show, setShow] = useState(false);
 
-  const { user } = useAuthCtx();
+  const [send, loading] = useFetch();
 
   const { setMemberProfile: setMemberProfileCtx } = useProfileCtx();
 
@@ -46,21 +44,8 @@ const Profile = () => {
 
   const loadUserProfile = async () => {
     try {
-      const res = await fetch(`/api/api/v1/members/profile`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      if (res.ok) {
-        const { data } = await res.json();
-        setMemberProfile(data);
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
-      }
+      const data = await send(`/api/api/v1/members/profile`);
+      setMemberProfile(data);
     } catch (error) {
       toast.error(error.message);
     }
@@ -85,47 +70,18 @@ const Profile = () => {
 
     if (state.isFormValid) {
       try {
-        setLoading(true);
-        let res;
         if (memberProfile._id && edit) {
-          res = await fetch(
+          const data = await send(
             `/api/api/v1/members/profile/${memberProfile._id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
-              },
-              body: JSON.stringify(formData),
-            }
+            "PUT",
+            JSON.stringify(formData)
           );
-        } else {
-          res = await fetch(`/api/api/v1/members/profile`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-            body: JSON.stringify(formData),
-          });
-        }
-
-        if (res.ok) {
-          const { data } = await res.json();
           setMemberProfile(data);
-          if (memberProfile._id && edit) {
-            toast.success("Profile updated successfully!");
-          } else {
-            toast.success("Profile created successfully!");
-          }
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
+          toast.success("Profile updated successfully!");
         }
       } catch (error) {
         toast.error(error.message);
       } finally {
-        setLoading(false);
         setEdit(false);
       }
     }
@@ -170,18 +126,10 @@ const Profile = () => {
   const handleResumeDeletion = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/api/v1/members/resume`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      if (res.ok) {
+      const data = await send(`/api/api/v1/members/resume`, "DELETE");
+      if (data) {
         toast.success("Profile updated successfully!");
         loadUserProfile();
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
       }
     } catch (error) {
       toast.error(error.message);
