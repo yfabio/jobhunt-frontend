@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate, useLocation, Outlet } from "react-router";
+import { useNavigate, useLocation, Outlet } from "react-router";
 
 import FilterJobs from "../components/FilterJobs";
 
@@ -7,10 +7,10 @@ import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+
+import { useFetch } from "../hooks/useFetch";
 
 const HomePage = () => {
-  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     total: 0,
     totalPages: 0,
@@ -19,6 +19,8 @@ const HomePage = () => {
   });
 
   const [accordion, setAccordion] = useState({ open: false, id: null });
+
+  const [loading, send] = useFetch();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,23 +32,8 @@ const HomePage = () => {
   }, [pagination.jobs, location.pathname, navigate]);
 
   const loadJobs = async (page = 1, searched = "") => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        `/api/api/v1/jobs?page=${page}&search=${searched}`
-      );
-      if (res.ok) {
-        const { data } = await res.json();
-        setPagination(data);
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+    const data = await send(`/api/api/v1/jobs?page=${page}&search=${searched}`);
+    setPagination(data);
   };
 
   useEffect(() => {
