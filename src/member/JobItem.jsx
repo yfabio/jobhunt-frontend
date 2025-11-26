@@ -6,12 +6,14 @@ import { useAuthCtx } from "../context/AuthContext";
 
 import Modal from "../components/Modal";
 import ButtonsAction from "../components/ButtonsAction";
-import { toast } from "react-toastify";
+import { useFetch } from "../hooks/useFetch";
 
 const JobItem = ({ job, accordion, setAccordion }) => {
   const [modal, setModal] = useState({ open: false, job: {} });
   const [isJobAlreadyApplied, setIsJobAlreadyApplied] = useState(false);
   const { user } = useAuthCtx();
+
+  const [send] = useFetch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,27 +22,8 @@ const JobItem = ({ job, accordion, setAccordion }) => {
 
   useState(() => {
     const getIsJobAlreadyApplied = async () => {
-      try {
-        if (user.token && job._id) {
-          const res = await fetch(`/api/api/v1/members/apply/${job._id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-          });
-
-          if (res.ok) {
-            const { data } = await res.json();
-            setIsJobAlreadyApplied(data);
-          } else {
-            const { message } = await res.json();
-            toast.error(message);
-          }
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
+      const data = await send(`/api/api/v1/members/apply/${job._id}`);
+      setIsJobAlreadyApplied(data);
     };
     if (user.token) {
       getIsJobAlreadyApplied();
