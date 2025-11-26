@@ -10,6 +10,7 @@ import MessageError from "../components/MessageError";
 import Modal from "../components/Modal";
 import { useAuthCtx } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { useFetch } from "../hooks/useFetch";
 
 const AccountSettings = () => {
   const [match, setMatch] = useState(false);
@@ -22,6 +23,8 @@ const AccountSettings = () => {
   const [passState, passDispatch, formDataPass] = useValidate(PassInput);
 
   const { user, updateEmail } = useAuthCtx();
+
+  const [send] = useFetch();
 
   const handleEmailChange = (e) => {
     emailDispatch({
@@ -71,23 +74,14 @@ const AccountSettings = () => {
   const handleSubmitEmail = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/api/v1/auth/email`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify(formDataEmail),
-      });
-      if (res.ok) {
-        const { data } = await res.json();
-        updateEmail(data);
-        clearEmailInput();
-        toast.success("Email updated successfully!");
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
-      }
+      const data = await send(
+        `/api/api/v1/auth/email`,
+        "PATCH",
+        JSON.stringify(formDataEmail)
+      );
+      updateEmail(data);
+      clearEmailInput();
+      toast.success("Email updated successfully!");
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -117,20 +111,14 @@ const AccountSettings = () => {
       return;
     }
     try {
-      const res = await fetch(`/api/api/v1/auth/pwd`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify(formDataPass),
-      });
-      if (res.ok) {
+      const data = await send(
+        `/api/api/v1/auth/pwd`,
+        "PATCH",
+        JSON.stringify(formDataPass)
+      );
+      if (data) {
         clearPasswordsInput();
         toast.success("Password updated successfully!");
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
       }
     } catch (error) {
       toast.error(error.message);
