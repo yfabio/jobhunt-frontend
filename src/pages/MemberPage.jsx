@@ -7,6 +7,8 @@ import { useProfileCtx } from "../context/ProfileContext";
 
 import { toast } from "react-toastify";
 
+import { useFetch } from "../hooks/useFetch";
+
 import Modal from "../components/Modal";
 import ImagePicker from "../components/ImagePicker";
 import ButtonsAction from "../components/ButtonsAction";
@@ -33,6 +35,8 @@ const MemberPage = () => {
 
   const { user } = useAuthCtx();
 
+  const [send] = useFetch();
+
   const { memberProfile } = useProfileCtx();
 
   let styleImage;
@@ -47,20 +51,8 @@ const MemberPage = () => {
 
   const loadUserProfile = async () => {
     try {
-      const res = await fetch(`/api/api/v1/members/profile`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      if (res.ok) {
-        const { data } = await res.json();
-        setMember(data);
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
-      }
+      const data = await send(`/api/api/v1/members/profile`);
+      setMember(data);
     } catch (error) {
       toast.error(error.message);
     }
@@ -73,20 +65,8 @@ const MemberPage = () => {
   useEffect(() => {
     const getJobCount = async () => {
       try {
-        const res = await fetch(`/api/api/v1/members/jobscount`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (res.ok) {
-          const { data } = await res.json();
-          setJobCount(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-        }
+        const data = await send(`/api/api/v1/members/jobscount`);
+        setJobCount(data);
       } catch (error) {
         toast.error(error.message);
       }
