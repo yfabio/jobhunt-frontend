@@ -4,15 +4,12 @@ import { FaTrashCan } from "react-icons/fa6";
 import Modal from "../components/Modal";
 import ButtonsAction from "../components/ButtonsAction";
 import { toast } from "react-toastify";
-import { useAuthCtx } from "../context/AuthContext";
 
 import { useFetch } from "../hooks/useFetch";
 
 const JobApplied = ({ job, update }) => {
   const [show, setShow] = useState(false);
   const [send] = useFetch();
-
-  const { user } = useAuthCtx();
 
   const handleSubmit = async (e, id) => {
     e.preventDefault();
