@@ -18,7 +18,9 @@ const Jobs = () => {
 
   const loadAppliedJobs = async (page = 1) => {
     try {
-      const data = await send(`/api/api/v1/members/jobs?page=${page}`);
+      const data = await send(
+        `/api/api/v1/members/jobs?page=${pagination.currentPage}`
+      );
       setPagination(data);
     } catch (error) {
       toast.error(error.message);

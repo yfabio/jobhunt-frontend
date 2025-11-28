@@ -6,8 +6,11 @@ import ButtonsAction from "../components/ButtonsAction";
 import { toast } from "react-toastify";
 import { useAuthCtx } from "../context/AuthContext";
 
+import { useFetch } from "../hooks/useFetch";
+
 const JobApplied = ({ job, update }) => {
   const [show, setShow] = useState(false);
+  const [send] = useFetch();
 
   const { user } = useAuthCtx();
 
@@ -15,19 +18,10 @@ const JobApplied = ({ job, update }) => {
     e.preventDefault();
     setShow(true);
     try {
-      const res = await fetch(`/api/api/v1/members/remove/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      if (res.ok) {
+      const data = await send(`/api/api/v1/members/remove/${id}`, "DELETE");
+      if (data) {
         update();
         toast.success("Job removed successfully!");
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
       }
     } catch (error) {
       toast.error(error.message);
