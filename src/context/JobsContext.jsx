@@ -2,6 +2,7 @@ import { createContext, use, useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 import { useAuthCtx } from "./AuthContext";
+import { useFetch } from "../hooks/useFetch";
 
 const JobsContext = createContext();
 
@@ -13,7 +14,15 @@ export function JobsProvider({ children }) {
     jobs: [],
   });
 
+  const [send] = useFetch();
+
   const { user } = useAuthCtx();
+
+  useEffect(() => {
+    if (user.token) {
+      loadJobs();
+    }
+  }, []);
 
   const addNewJob = (value) => {
     setPagination((pag) => {
@@ -30,22 +39,12 @@ export function JobsProvider({ children }) {
   const deleteJob = async (id) => {
     if (user.token) {
       try {
-        const res = await fetch(`/api/api/v1/businesses/jobs/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (res.ok) {
+        const data = await send(`/api/api/v1/businesses/jobs/${id}`, "DELETE");
+        if (data) {
           setPagination((pag) => ({
             ...pag,
             jobs: pag.jobs.filter((job) => job._id !== id),
           }));
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
-          console.log(message);
         }
       } catch (error) {
         toast.error(error.message);
@@ -65,19 +64,9 @@ export function JobsProvider({ children }) {
   const loadJobs = async (page = 1) => {
     if (user.token) {
       try {
-        const res = await fetch(`/api/api/v1/businesses/jobs?page=${page}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        if (res.ok) {
-          const { data } = await res.json();
+        const data = await send(`/api/api/v1/businesses/jobs?page=${page}`);
+        if (data) {
           setPagination(data);
-        } else {
-          const { message } = await res.json();
-          toast.error(message);
         }
       } catch (error) {
         toast.error(error.message);
